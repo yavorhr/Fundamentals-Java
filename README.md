@@ -30,3 +30,6 @@ The [Programming Fundamentals](https://softuni.bg/trainings/2831/java-fundamenta
 - Basics of web development
 - Basic skills for working with HTML and CSS
 
+![Java Fundamentals - May 2020 - Certificate](https://user-images.githubusercontent.com/76119513/137166172-b9fff415-64a9-4045-b700-b5bc63330728.jpeg)
+
+
