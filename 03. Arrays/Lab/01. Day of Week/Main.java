@@ -1,0 +1,28 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int daysNum = Integer.parseInt(scanner.nextLine());
+
+        String[] daysOfWeek = {
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+        };
+
+        if (daysNum > 0 && daysNum <= 7) {
+            System.out.println(daysOfWeek[daysNum - 1]);
+        } else {
+            System.out.println("Invalid day!");
+        }
+
+    }
+}
+
+
