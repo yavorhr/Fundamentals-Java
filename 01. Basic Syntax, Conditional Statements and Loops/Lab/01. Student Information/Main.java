@@ -8,7 +8,7 @@ public class Main {
 
         String result = getResultIfGradePass(scanner);
 
-
+        System.out.println(result);
     }
 
     private static String getResultIfGradePass(Scanner scanner) {
