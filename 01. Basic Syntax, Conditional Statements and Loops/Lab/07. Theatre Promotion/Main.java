@@ -4,47 +4,50 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String typeOfDay = scanner.nextLine().toLowerCase();
+        String typeOfTheDay = scanner.nextLine();
         int age = Integer.parseInt(scanner.nextLine());
 
-        double price = 0;
+        String result = getPrice(typeOfTheDay, age);
 
-        switch (typeOfDay) {
-            case "weekday":
-                if (age <= 18 && age >= 0) {
-                    price = 12;
+        System.out.println(result);
+    }
+
+    private static String getPrice(String typeOfTheDay, int age) {
+        String price = "";
+
+        switch (typeOfTheDay) {
+            case "Weekday":
+                if (age >= 0 && age <= 18) {
+                    price = "12$";
                 } else if (age > 18 && age <= 64) {
-                    price = 18;
+                    price = "18$";
                 } else if (age > 64 && age <= 122) {
-                    price = 12;
+                    price = "12$";
                 }
                 break;
-            case "holiday":
-                if (age <= 18 && age >= 0) {
-                    price = 5;
+            case "Weekend":
+                if (age >= 0 && age <= 18) {
+                    price = "15$";
                 } else if (age > 18 && age <= 64) {
-                    price = 12;
+                    price = "20$";
                 } else if (age > 64 && age <= 122) {
-                    price = 10;
+                    price = "15$";
                 }
                 break;
-            case "weekend":
-                if (age <= 18 && age >= 0) {
-                    price = 15;
+            case "Holiday":
+                if (age >= 0 && age <= 18) {
+                    price = "5$";
                 } else if (age > 18 && age <= 64) {
-                    price = 20;
+                    price = "12$";
                 } else if (age > 64 && age <= 122) {
-                    price = 15;
+                    price = "10$";
                 }
                 break;
         }
 
-        if (price != 0) {
-            System.out.printf("%.0f$", price);
-        } else {
-            System.out.println("Error!");
+        if (age < 0 || age > 122) {
+            return "Error!";
         }
-
+        return price;
     }
 }
-
