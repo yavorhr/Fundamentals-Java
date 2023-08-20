@@ -6,19 +6,18 @@ public class Main {
 
         String country = scanner.nextLine();
 
+        String spokenLanguagePerCountry = getLanguage(country);
+        System.out.println(spokenLanguagePerCountry);
+    }
+
+    private static String getLanguage(String country) {
+        String result = "";
+
         switch (country) {
-            case "USA":
-            case "England":
-                System.out.println("English");
-                break;
-            case "Spain":
-            case "Argentina":
-            case "Mexico":
-                System.out.println("Spanish");
-                break;
-            default:
-                System.out.println("unknown");
+            case "USA", "England" -> result = "English";
+            case "Spain", "Argentina", "Mexico" -> result = "Spanish";
+            default -> result = "unknown";
         }
-        
+        return result;
     }
 }
