@@ -4,58 +4,85 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        double price = 0;
+        int peopleCount = Integer.parseInt(scanner.nextLine());
+        String typeOfGroup = scanner.nextLine();
+        String weekDay = scanner.nextLine();
 
-        int people = Integer.parseInt(scanner.nextLine());
-        String typeGroup = scanner.nextLine();
-        String day = scanner.nextLine();
+        printResult(peopleCount, typeOfGroup, weekDay);
 
-        switch (day) {
+    }
+
+    private static void printResult(int peopleCount, String typeOfGroup, String weekDay) {
+        double ticketPrice = 0.0;
+        double totalPrice = 0.0;
+
+        switch (weekDay) {
             case "Friday":
-                if ("Students".equals(typeGroup)) {
-                    price = people * 8.45;
-                } else if ("Business".equals(typeGroup)) {
-                    price = people * 10.90;
-                    break;
-                } else if ("Regular".equals(typeGroup)) {
-                    price = people * 15;
+                if (typeOfGroup.equals("Students")) {
+                    ticketPrice = 8.45;
+                    totalPrice = calcStudentsDiscount(ticketPrice, peopleCount);
+                } else if (typeOfGroup.equals("Business")) {
+                    ticketPrice = 10.90;
+                    totalPrice = calcBusinessDiscount(ticketPrice, peopleCount);
+                } else if (typeOfGroup.equals("Regular")) {
+                    ticketPrice = 15.00;
+                    totalPrice = calcRegularDiscount(ticketPrice, peopleCount);
                 }
                 break;
             case "Saturday":
-                if ("Students".equals(typeGroup)) {
-                    price = people * 9.80;
-                } else if ("Business".equals(typeGroup)) {
-                    price = people * 15.60;
-                    break;
-                } else if ("Regular".equals(typeGroup)) {
-                    price = people * 20;
+                if (typeOfGroup.equals("Students")) {
+                    ticketPrice = 9.80;
+                    totalPrice = calcStudentsDiscount(ticketPrice, peopleCount);
+                } else if (typeOfGroup.equals("Business")) {
+                    ticketPrice = 15.60;
+                    totalPrice = calcBusinessDiscount(ticketPrice, peopleCount);
+                } else if (typeOfGroup.equals("Regular")) {
+                    ticketPrice = 20.00;
+                    totalPrice = calcRegularDiscount(ticketPrice, peopleCount);
                 }
                 break;
             case "Sunday":
-                if ("Students".equals(typeGroup)) {
-                    price = people * 10.46;
-                } else if ("Business".equals(typeGroup)) {
-                    price = people * 16;
-                    break;
-                } else if ("Regular".equals(typeGroup)) {
-                    price = people * 22.50;
+                if (typeOfGroup.equals("Students")) {
+                    ticketPrice = 10.46;
+                    totalPrice = calcStudentsDiscount(ticketPrice, peopleCount);
+                } else if (typeOfGroup.equals("Business")) {
+                    ticketPrice = 16.00;
+                    totalPrice = calcBusinessDiscount(ticketPrice, peopleCount);
+                } else if (typeOfGroup.equals("Regular")) {
+                    ticketPrice = 22.50;
+                    totalPrice = calcRegularDiscount(ticketPrice, peopleCount);
+
                 }
                 break;
         }
+        System.out.printf("Total price: %.2f", totalPrice);
+    }
 
-        if (typeGroup.equals("Students") && people >= 30) {
-            price *= 0.85;
+    private static double calcStudentsDiscount(double ticketPrice, int peopleCount) {
+        double totalPrice = calcTotalAmount(ticketPrice, peopleCount);
+        if (peopleCount >= 30) {
+            totalPrice -= totalPrice * 0.15;
         }
+        return totalPrice;
+    }
 
-        if (typeGroup.equals("Business") && people >= 100) {
-            price = (price / people) * (people - 10);
+    private static double calcBusinessDiscount(double ticketPrice, int peopleCount) {
+        double totalPrice = calcTotalAmount(ticketPrice, peopleCount);
+        if (peopleCount >= 100) {
+            totalPrice -= ticketPrice * 10;
         }
+        return totalPrice;
+    }
 
-        if (typeGroup.equals("Regular") && people >= 10 && people <= 20) {
-            price *= 0.95;
+    private static double calcRegularDiscount(double ticketPrice, int peopleCount) {
+        double totalPrice = calcTotalAmount(ticketPrice, peopleCount);
+        if (peopleCount >= 10 && peopleCount <= 20) {
+            totalPrice -= totalPrice * 0.05;
         }
+        return totalPrice;
+    }
 
-        System.out.printf("Total price: %.2f", price);
+    private static double calcTotalAmount(double ticketPrice, int peopleCount) {
+        return ticketPrice * peopleCount;
     }
 }
-
