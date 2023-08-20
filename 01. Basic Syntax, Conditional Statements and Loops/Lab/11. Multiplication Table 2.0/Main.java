@@ -4,20 +4,23 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int n = Integer.parseInt(scanner.nextLine());
-        int multiplier = Integer.parseInt(scanner.nextLine());         //{theInteger} X {times} = {product}
+        int number = Integer.parseInt(scanner.nextLine());
+        int times = Integer.parseInt(scanner.nextLine());
 
-        if (multiplier > 10) {
-            System.out.printf("%d X %d = %d%n", n, multiplier, n * multiplier);
+        printResult(number, times);
+    }
+
+    private static void printResult(int number, int times) {
+        if (times > 10) {
+            printLine(number, times);
         } else {
-            while (multiplier <= 10) {
-                int formula = n * multiplier;
-
-                System.out.printf("%d X %d = %d%n", n, multiplier, formula);
-                multiplier++;
+            for (int i = times; i <= 10; i++) {
+                printLine(times, i);
             }
         }
+    }
 
+    private static void printLine(int number, int times) {
+        System.out.printf("%d x %d = %d%n", number, times, number * times);
     }
 }
-
