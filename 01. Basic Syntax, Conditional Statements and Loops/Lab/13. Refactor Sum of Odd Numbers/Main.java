@@ -4,15 +4,25 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int n = Integer.parseInt(scanner.nextLine());
-        int oddSum = 0;
+        int age = Integer.parseInt(scanner.nextLine());
 
-        for (int i = 1; i <= n; i++) {
-            int oddNumber = 2 * i - 1;
-            System.out.println(oddNumber);
-            oddSum += oddNumber;
+        printResult(age);
+    }
+
+    private static void printResult(int age) {
+        String result = "";
+
+        if (age > 0 && age <= 2) {
+            result = "baby";
+        } else if (age > 2 && age <= 13) {
+            result = "child";
+        } else if (age > 13 && age <= 19) {
+            result = "teenager";
+        } else if (age > 19 && age <= 65) {
+            result = "adult";
+        } else {
+            result = "elder";
         }
-
-        System.out.printf("Sum: %d%n", oddSum);
+        System.out.println(result);
     }
 }
