@@ -4,60 +4,60 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        double sum = 0;
         String command = scanner.nextLine();
-        while (!("Start".equals(command))) {
-            double money = Double.parseDouble(command);
+        double sumOfCoins = 0.0;
 
-            if (money == 0.1 || money == 0.2 || money == 0.5 || money == 1 || money == 2) {
-                sum += money;
+        while (!command.equals("Start")) {
+            double coin = Double.parseDouble(command);
+
+            if (coin == 0.1 || coin == 0.2 || coin == 0.5 || coin == 1 || coin == 2) {
+                sumOfCoins += coin;
             } else {
-                System.out.printf("Cannot accept %.2f%n", money);
+                System.out.printf("Cannot accept %.2f\n", coin);
             }
             command = scanner.nextLine();
         }
 
-        boolean boughtItem = false;
-        double price = 0.0;
+        String purchaseInput = scanner.nextLine();
+        while (!purchaseInput.equals("End")) {
 
-        String purchase = scanner.nextLine();
-        while (!("End".equals(purchase))) {
-            switch (purchase) {
-                case "Nuts":
-                    price = 2.0;
-                    boughtItem = true;
-                    break;
-                case "Water":
-                    price = 0.7;
-                    boughtItem = true;
-                    break;
-                case "Crisps":
-                    price = 1.5;
-                    boughtItem = true;
-                    break;
-                case "Soda":
-                    price = 0.8;
-                    boughtItem = true;
-                    break;
-                case "Coke":
-                    price = 1.0;
-                    boughtItem = true;
-                    break;
-                default:
-                    break;
+            boolean buyArticle = false;
+            double productPrice = 0.0;
+
+            switch (purchaseInput) {
+                case "Nuts" -> {
+                    productPrice = 2.0;
+                    buyArticle = true;
+                }
+                case "Water" -> {
+                    productPrice = 0.7;
+                    buyArticle = true;
+                }
+                case "Crisps" -> {
+                    productPrice = 1.5;
+                    buyArticle = true;
+                }
+                case "Soda" -> {
+                    productPrice = 0.8;
+                    buyArticle = true;
+                }
+                case "Coke" -> {
+                    productPrice = 1.0;
+                    buyArticle = true;
+                }
             }
 
-            if (price > sum) {
-                System.out.println("Sorry, not enough money");
-            } else if (boughtItem) {
-                sum -= price;
-                System.out.printf("Purchased %s%n", purchase);
+            boolean enoughCoins = sumOfCoins - productPrice > 0;
+
+            if (buyArticle && enoughCoins) {
+                sumOfCoins -= productPrice;
+                System.out.printf("Purchased %s\n", purchaseInput);
+            } else if (!enoughCoins && buyArticle) {
+                System.out.println("Sorry, not enough money\n" + "Change: " + sumOfCoins);
             } else {
                 System.out.println("Invalid product");
             }
-            purchase = scanner.nextLine();
+            purchaseInput = scanner.nextLine();
         }
-        System.out.printf("Change: %.2f", sum);
     }
 }
-
