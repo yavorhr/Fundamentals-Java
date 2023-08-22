@@ -4,9 +4,12 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int distanceMeters = Integer.parseInt(scanner.nextLine());
-        double distanceKm = distanceMeters * 1.0 / 1000;
+        int distanceInMeters = Integer.parseInt(scanner.nextLine());
+        printMetersInKm(distanceInMeters);
+    }
 
-        System.out.printf("%.2f", distanceKm);
+    private static void printMetersInKm(int distanceInMeters) {
+        double distanceInKm = distanceInMeters / 1000.00;
+        System.out.printf("%.2f",distanceInKm);
     }
 }
