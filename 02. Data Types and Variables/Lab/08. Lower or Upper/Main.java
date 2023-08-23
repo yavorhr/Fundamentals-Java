@@ -4,13 +4,16 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String firstLetter = scanner.nextLine();
+        String input = scanner.nextLine();
+        printResult(input);
 
-        if (firstLetter == firstLetter.toLowerCase()) {
+    }
+
+    private static void printResult(String input) {
+        if (input.equals(input.toLowerCase())){
             System.out.println("lower-case");
-        } else if (firstLetter == firstLetter.toUpperCase()) {
+        } else if (input.equals(input.toUpperCase())){
             System.out.println("upper-case");
         }
-
     }
 }
