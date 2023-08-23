@@ -4,15 +4,19 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int sumChars = 0;
+        int n = Integer.parseInt(scanner.nextLine());
+        int sum = sumCharacters(n, scanner);
 
-        int count = Integer.parseInt(scanner.nextLine());
-        for (int i = 0; i < count; i++) {
-            int symbol = scanner.nextLine().charAt(0);
+        System.out.printf("The sum equals: %d", sum);
+    }
 
-            sumChars += symbol;
+    private static int sumCharacters(int n, Scanner scanner) {
+        int sum = 0;
+
+        for (int i = 0; i < n; i++) {
+            int charInput = scanner.nextLine().charAt(0);
+            sum += charInput;
         }
-        System.out.println("The sum equals: " + sumChars);
+        return sum;
     }
 }
-
