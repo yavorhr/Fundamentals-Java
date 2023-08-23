@@ -4,11 +4,11 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        extracted("Length: ");
+        printMeasurement("Length: ");
         double length = readDoubleFromConsole(scanner);
-        extracted("Width: ");
+        printMeasurement("Width: ");
         double width = readDoubleFromConsole(scanner);
-        extracted("Height: ");
+        printMeasurement("Height: ");
         double height = readDoubleFromConsole(scanner);
 
         double pyramidArea = calculatePyramidArea(length, width, height);
@@ -16,7 +16,7 @@ public class Main {
         System.out.printf("Pyramid Volume: %.2f", pyramidArea);
     }
 
-    private static void extracted(String param) {
+    private static void printMeasurement(String param) {
         System.out.print(param);
     }
 
