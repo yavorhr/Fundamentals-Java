@@ -4,24 +4,26 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        byte count = Byte.parseByte(scanner.nextLine());
-        double bestKegVolume = -1.0;
+        double biggestKegVolume = Integer.MIN_VALUE;
+        String biggestKegName = "";
+        int n = Integer.parseInt(scanner.nextLine());
 
-        String bestModel = "";
-
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < n; i++) {
             String model = scanner.nextLine();
             double radius = Double.parseDouble(scanner.nextLine());
             int height = Integer.parseInt(scanner.nextLine());
 
-            double volume = Math.PI * Math.pow(radius, 2) * height;
+            double kegSize = calculateKegSize(radius, height);
 
-            if (volume > bestKegVolume) {
-                bestKegVolume = volume;
-                bestModel = model;
+            if (kegSize > biggestKegVolume) {
+                biggestKegVolume = kegSize;
+                biggestKegName = model;
             }
         }
+        System.out.println(biggestKegName);
+    }
 
-        System.out.println(bestModel);
+    private static double calculateKegSize(double radius, int height) {
+        return Math.PI * Math.pow(radius, 2) * height;
     }
 }
