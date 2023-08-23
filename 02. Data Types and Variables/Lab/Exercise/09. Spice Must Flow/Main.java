@@ -4,24 +4,24 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int startingYield = Integer.parseInt(scanner.nextLine());   //111
+        int startingYield = Integer.parseInt(scanner.nextLine());
 
-        int allSpice = 0;
-        int dayCnt = 0;
+        int days = 0;
+        int collectedSpice = 0;
 
-        while (startingYield >= 100) {
-            int currentSpice = startingYield - 26;
-            allSpice += currentSpice;
-            dayCnt++;
-
+        while (startingYield > 0) {
+            collectedSpice += startingYield;
+            collectedSpice -= 26;
             startingYield -= 10;
+            days++;
 
             if (startingYield < 100) {
-                allSpice -= 26;
+                collectedSpice -= 26;
+                break;
             }
         }
 
-        System.out.println(dayCnt);
-        System.out.println(allSpice);
+        System.out.println(days);
+        System.out.println(collectedSpice);
     }
 }
