@@ -4,13 +4,18 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int number = Integer.parseInt(scanner.nextLine());
+        int numberInput = Integer.parseInt(scanner.nextLine());
+        int sum = sumDigits(numberInput);
 
+        System.out.println(sum);
+    }
+
+    private static int sumDigits(int numberInput) {
         int sumDigits = 0;
-        while (number > 0) {
-            sumDigits += number % 10;
-            number /= 10;
+        while (numberInput > 0) {
+            sumDigits += numberInput % 10;
+            numberInput /= 10;
         }
-        System.out.println(sumDigits);
+        return sumDigits;
     }
 }
