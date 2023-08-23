@@ -4,12 +4,20 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int num1 = Integer.parseInt(scanner.nextLine());
-        int num2 = Integer.parseInt(scanner.nextLine());
-        int num3 = Integer.parseInt(scanner.nextLine());
-        int num4 = Integer.parseInt(scanner.nextLine());
+        int firstInt = readIntegerFromConsole(scanner);
+        int secondInt = readIntegerFromConsole(scanner);
+        int thirdInt = readIntegerFromConsole(scanner);
+        int fourthInt = readIntegerFromConsole(scanner);
 
-        System.out.println(((num1 + num2) / num3) * num4);
+        int result = calculateFormula(firstInt, secondInt, thirdInt, fourthInt);
+        System.out.println(result);
+    }
+
+    private static int calculateFormula(int firstInt, int secondInt, int thirdInt, int fourthInt) {
+        return ((firstInt + secondInt) / thirdInt) * fourthInt;
+    }
+
+    private static int readIntegerFromConsole(Scanner scanner) {
+        return Integer.parseInt(scanner.nextLine());
     }
 }
-
