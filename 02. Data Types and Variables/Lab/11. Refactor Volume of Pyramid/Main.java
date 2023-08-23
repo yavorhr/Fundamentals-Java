@@ -4,16 +4,27 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        double length = Double.parseDouble(scanner.nextLine());
-        double width = Double.parseDouble(scanner.nextLine());
-        double height = Double.parseDouble(scanner.nextLine());
+        extracted("Length: ");
+        double length = readDoubleFromConsole(scanner);
+        extracted("Width: ");
+        double width = readDoubleFromConsole(scanner);
+        extracted("Height: ");
+        double height = readDoubleFromConsole(scanner);
 
-        double formula = (length + width + height) / 3;
+        double pyramidArea = calculatePyramidArea(length, width, height);
 
-        System.out.print("Length: ");
-        System.out.print("Width: ");
-        System.out.print("Height: ");
-        System.out.printf("Pyramid Volume: %.2f", formula);
+        System.out.printf("Pyramid Volume: %.2f", pyramidArea);
+    }
+
+    private static void extracted(String param) {
+        System.out.print(param);
+    }
+
+    private static double calculatePyramidArea(double length, double width, double height) {
+        return (length + width + height) / 3;
+    }
+
+    private static double readDoubleFromConsole(Scanner scanner) {
+        return Double.parseDouble(scanner.nextLine());
     }
 }
-
