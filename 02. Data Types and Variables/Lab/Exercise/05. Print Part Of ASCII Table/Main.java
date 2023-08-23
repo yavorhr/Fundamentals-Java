@@ -4,12 +4,16 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int firstSymbol = Integer.parseInt(scanner.nextLine());
-        int secondSymbol = Integer.parseInt(scanner.nextLine());
+        int startIndex = Integer.parseInt(scanner.nextLine());
+        int endIndex = Integer.parseInt(scanner.nextLine());
 
-        for (int i = firstSymbol; i <= secondSymbol; i++) {
+        printResult(startIndex, endIndex);
+    }
+
+    private static void printResult(int startIndex, int endIndex) {
+        for (int i = startIndex; i <= endIndex; i++) {
             System.out.printf("%c ", i);
         }
-
     }
+
 }
