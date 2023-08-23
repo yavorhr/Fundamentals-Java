@@ -4,25 +4,26 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int pokePower = Integer.parseInt(scanner.nextLine());   //N
-        int distance = Integer.parseInt(scanner.nextLine());    //M
+        int pokePower = Integer.parseInt(scanner.nextLine()); //N
+        int initialPokePower = pokePower;
+        int distance = Integer.parseInt(scanner.nextLine()); //M
         byte exhaustionFactor = Byte.parseByte(scanner.nextLine()); //Y
-        int halfPokePower = pokePower / 2;
 
-        int targetCount = 0;
+        int targetsCount = 0;
+
         while (pokePower >= distance) {
             pokePower -= distance;
-            targetCount++;
+            targetsCount++;
 
+            boolean halfTired = initialPokePower / pokePower == 2;
             boolean isSafeToDelete = exhaustionFactor > 0;
 
-            if (pokePower == halfPokePower && isSafeToDelete) {
+            if (halfTired && isSafeToDelete) {
                 pokePower = pokePower / exhaustionFactor;
             }
         }
 
         System.out.println(pokePower);
-        System.out.println(targetCount);
+        System.out.println(targetsCount);
     }
 }
-
