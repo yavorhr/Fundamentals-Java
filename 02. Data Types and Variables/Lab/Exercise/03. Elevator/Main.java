@@ -7,13 +7,25 @@ public class Main {
         int numberOfPeople = Integer.parseInt(scanner.nextLine());
         int capacity = Integer.parseInt(scanner.nextLine());
 
-        int courses = numberOfPeople / capacity;
-        int peopleLeft = numberOfPeople % capacity;
+        String result = capacityCheck(numberOfPeople, capacity);
+        System.out.println(result);
+    }
 
-        if (peopleLeft > 0) {
-            courses++;
+    private static String capacityCheck(int numberOfPeople, int capacity) {
+        String result = "";
+
+        if (numberOfPeople < capacity) {
+            result = "All the persons fit inside in the elevator.";
+        } else {
+            int courses = numberOfPeople / capacity;
+            int remainPeople = numberOfPeople % capacity;
+
+            if (remainPeople > 0) {
+                courses = courses + 1;
+            }
+            result = courses + "";
         }
-
-        System.out.println(courses);
+        return result;
     }
 }
+
