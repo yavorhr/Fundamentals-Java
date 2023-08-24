@@ -14,18 +14,24 @@ public class Main {
             String firstElement = input[0];
             String secondElement = input[1];
 
-            if (i % 2 == 0) {
-                firstArray[i] = firstElement;
-                secondArray[i] = secondElement;
-            } else {
-                firstArray[i] = secondElement;
-                secondArray[i] = firstElement;
-            }
+            initArraysDependingOnIndex(firstArray, secondArray, i, firstElement, secondElement);
         }
 
-        System.out.println(String.join(" ", firstArray));
-        System.out.println(String.join(" ", secondArray));
+        printArr(firstArray);
+        printArr(secondArray);
+    }
+
+    private static void initArraysDependingOnIndex(String[] firstArray, String[] secondArray, int i, String firstElement, String secondElement) {
+        if (i % 2 == 0) {
+            firstArray[i] = firstElement;
+            secondArray[i] = secondElement;
+        } else {
+            firstArray[i] = secondElement;
+            secondArray[i] = firstElement;
+        }
+    }
+
+    private static void printArr(String[] arr){
+        System.out.println(String.join(" ",arr));
     }
 }
-
-
