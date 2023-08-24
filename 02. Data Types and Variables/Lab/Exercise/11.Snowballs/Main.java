@@ -4,33 +4,35 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int count = Integer.parseInt(scanner.nextLine());
+        int numberOfSnowballs = Integer.parseInt(scanner.nextLine());
+        double bestSnowball = Double.MIN_VALUE;
 
-        double bestSnowball = 0;
-        int bestSnow = 0;
+        int bestSnowballSnow = 0;
         int bestSnowballTime = 0;
         int bestSnowballQuality = 0;
 
+        for (int i = 0; i < numberOfSnowballs; i++) {
+            int snow = Integer.parseInt(scanner.nextLine());
+            int time = Integer.parseInt(scanner.nextLine());
+            int quality = Integer.parseInt(scanner.nextLine());
 
-        for (int i = 0; i < count; i++) {
-            int snowballSnow = Integer.parseInt(scanner.nextLine());
-            int snowballTime = Integer.parseInt(scanner.nextLine());
-            int snowballQuality = Integer.parseInt(scanner.nextLine());
-
-            int snowAndTime = snowballSnow / snowballTime;
-            double currentSnowball = Math.pow(snowAndTime * 1.0, snowballQuality);
+            double currentSnowball = calcStats(snow, time, quality);
 
             if (currentSnowball > bestSnowball) {
                 bestSnowball = currentSnowball;
-                bestSnow = snowballSnow;
-                bestSnowballTime = snowballTime;
-                bestSnowballQuality = snowballQuality;
+                bestSnowballSnow = snow;
+                bestSnowballTime = time;
+                bestSnowballQuality = quality;
             }
         }
+        printResult(bestSnowballSnow, bestSnowballTime, bestSnowballQuality);
+    }
 
-        System.out.printf("%d : %d = %.0f (%d)", bestSnow, bestSnowballTime, bestSnowball, bestSnowballQuality);
-        //{snowballSnow} : {snowballTime} = {snowballValue} ({snowballQuality})
+    private static void printResult(int bestSnowballSnow, int bestSnowballTime, int bestSnowballQuality) {
+        System.out.printf("%d : %d = %.0f (%d)", bestSnowballSnow, bestSnowballTime, calcStats(bestSnowballSnow, bestSnowballTime, bestSnowballQuality), bestSnowballQuality);
+    }
+
+    private static double calcStats(int snow, int time, int quality) {
+        return Math.pow((snow * 1.0 / time), quality);
     }
 }
-
-
