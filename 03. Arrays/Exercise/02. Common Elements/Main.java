@@ -1,20 +1,28 @@
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] firstArray = scanner.nextLine().split(" ");
-        String[] secondArray = scanner.nextLine().split(" ");
+        String[] firstArr = readArrFromConsole(scanner);
+        String[] secondArr = readArrFromConsole(scanner);
 
-        for (String elementOne : secondArray) {
-            for (String elementTwo : firstArray) {
-                if (elementOne.equals(elementTwo)) {
-                    System.out.print(elementOne + " ");
-                }
+        printCommonElements(firstArr, secondArr);
+    }
+
+    private static void printCommonElements(String[] firstArr, String[] secondArr) {
+        List<String> firstArrAsList = Arrays.asList(firstArr);
+
+        for (String element : secondArr) {
+            if (firstArrAsList.contains(element)) {
+                System.out.print(element + " ");
             }
         }
+    }
 
+    private static String[] readArrFromConsole(Scanner scanner) {
+        return scanner.nextLine().split(" ");
     }
 }
-
