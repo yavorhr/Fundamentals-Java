@@ -4,10 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int daysNum = Integer.parseInt(scanner.nextLine());
-
-        String[] daysOfWeek = {
-                "Monday",
+        String[] daysOfWeek = {"Monday",
                 "Tuesday",
                 "Wednesday",
                 "Thursday",
@@ -16,13 +13,20 @@ public class Main {
                 "Sunday",
         };
 
-        if (daysNum > 0 && daysNum <= 7) {
-            System.out.println(daysOfWeek[daysNum - 1]);
-        } else {
-            System.out.println("Invalid day!");
-        }
+        int n = Integer.parseInt(scanner.nextLine());
+        boolean validInput = checkIfInputIsValid(n);
+        printResult(validInput, n, daysOfWeek);
+    }
 
+    private static boolean checkIfInputIsValid(int n) {
+        return n >= 1 && n <= 7;
+    }
+
+    private static void printResult(boolean checkInput, int n, String[] daysOfWeek) {
+        if (!checkInput) {
+            System.out.println("Invalid day!");
+        } else {
+            System.out.println(daysOfWeek[n - 1]);
+        }
     }
 }
-
-
