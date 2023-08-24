@@ -1,23 +1,43 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] first = scanner.nextLine().split(" ");
-        String[] second = scanner.nextLine().split(" ");
+        int[] firstArr = readIntArray(scanner);
+        int[] secondArr = readIntArray(scanner);
 
-        int sum = 0;
-        for (int i = 0; i < first.length; i++) {
-            if (!first[i].equals(second[i])) {
-                System.out.printf("Arrays are not identical. Found difference at %d index.%n", i);
-                return;
-            }
+        boolean checkIfIdentical = Arrays.equals(firstArr, secondArr);
 
-            sum += Integer.parseInt(first[i]);
+        if (checkIfIdentical) {
+            printIdenticalOutput(firstArr);
+        } else {
+            printNotIdenticalOutput(firstArr, secondArr);
         }
+    }
 
-        System.out.printf("Arrays are identical. Sum: %d%n", sum);
+    private static void printNotIdenticalOutput(int[] firstArr, int[] secondArr) {
+        for (int i = 0; i < firstArr.length; i++) {
+            int firstNum = firstArr[i];
+            int secondNum = secondArr[i];
+
+            if (firstNum != secondNum) {
+                System.out.printf("Arrays are not identical. Found difference at %d index.", i);
+                break;
+            }
+        }
+    }
+
+    private static void printIdenticalOutput(int[] firstArr) {
+        int sum = Arrays.stream(firstArr).sum();
+        System.out.printf("Arrays are identical. Sum: %d", sum);
+    }
+
+    private static int[] readIntArray(Scanner scanner) {
+        return Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
     }
 }
-
