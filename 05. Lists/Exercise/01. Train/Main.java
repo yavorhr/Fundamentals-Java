@@ -1,42 +1,52 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] passengers = scanner.nextLine().split(" ");
-        int maxCapacity = Integer.parseInt(scanner.nextLine());
-        List<Integer> wagon = new ArrayList<>();
-        for (String passenger : passengers) {
-            int passengerInt = Integer.parseInt(passenger);
-            wagon.add(passengerInt);
-        }
+        List<Integer> wagonsWithPassengers = readListOfInts(scanner);
+        int wagonCapacity = Integer.parseInt(scanner.nextLine());
 
         String input = scanner.nextLine();
-        while (!"end".equals(input)) {
+        while (!input.equals("end")) {
             String[] tokens = input.split(" ");
+
             if (tokens[0].equals("Add")) {
-                int extraWagon = Integer.parseInt(tokens[1]);
-                wagon.add(extraWagon);
+                int newPassengers = Integer.parseInt(tokens[1]);
+                addMoreWagonsWithPassengers(wagonsWithPassengers, newPassengers);
             } else {
-                int extraPassenger = Integer.parseInt(tokens[0]);
-                for (int i = 0; i < wagon.size(); i++) {
-                    if (maxCapacity - wagon.get(i) >= extraPassenger) {
-                        wagon.set(i, wagon.get(i) + extraPassenger);
-                        break;
-                    }
-                }
+                int newPassengers = Integer.parseInt(tokens[0]);
+                addPassengersToAWagon(wagonsWithPassengers, wagonCapacity, newPassengers);
             }
             input = scanner.nextLine();
         }
-        System.out.println(wagon.toString().replaceAll("[\\[\\],]", ""));
+        printResult(wagonsWithPassengers);
+    }
+
+    private static void addPassengersToAWagon(List<Integer> wagonsWithPassengers, int wagonCapacity, int newPassengers) {
+        for (int i = 0; i < wagonsWithPassengers.size(); i++) {
+            int currentPassengers = wagonsWithPassengers.get(i);
+
+            if (currentPassengers + newPassengers <= wagonCapacity) {
+                wagonsWithPassengers.set(i, currentPassengers+ newPassengers);
+                break;
+            }
+        }
+    }
+
+    private static void addMoreWagonsWithPassengers(List<Integer> wagonsWithPassengers, int passengers) {
+        wagonsWithPassengers.add(passengers);
+    }
+
+    private static List<Integer> readListOfInts(Scanner scanner) {
+        return Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
+    private static void printResult(List<Integer> list){
+        System.out.println(list.toString().replaceAll("[\\[\\],]", ""));
     }
 }
-
-
-
-
-
-
