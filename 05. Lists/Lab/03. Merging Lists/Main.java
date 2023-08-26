@@ -1,40 +1,51 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] firstInput = scanner.nextLine().split(" ");
-        String[] secondInput = scanner.nextLine().split(" ");
+        List<Integer> firstListInput = readIntArrayList(scanner);
+        List<Integer> secondListInput = readIntArrayList(scanner);
+        List<Integer> newList = new ArrayList<>();
 
-        List<Integer> first = new ArrayList<>();
-        List<Integer> second = new ArrayList<>();
+        int minLength = getMinLength(firstListInput, secondListInput);
 
-        for (String elementFirstInput : firstInput) {
-            int number = Integer.parseInt(elementFirstInput);
-            first.add(number);
+        sumListsUntilMinLength(minLength, firstListInput, secondListInput, newList);
+
+        if (minLength != firstListInput.size()) {
+            addRestNumbers(firstListInput, newList, minLength);
+        } else {
+            addRestNumbers(secondListInput, newList, minLength);
         }
+        printNewList(newList);
+    }
 
-        for (String elementSecondInput : secondInput) {
-            int number = Integer.parseInt(elementSecondInput);
-            second.add(number);
-        }
+    private static void printNewList(List<Integer> firstAndSecondListCombined) {
+        System.out.println(firstAndSecondListCombined.toString().replaceAll("[\\[\\],]", ""));
+    }
 
-        int minLength = Math.min(first.size(), second.size());
-
-        for (int i = 0; i < minLength; i++) {
-            System.out.print(first.get(i) + " ");
-            System.out.print(second.get(i) + " ");
-        }
-
-        for (int i = minLength; i < first.size(); i++) {
-            System.out.print(first.get(i) + " ");
-        }
-        for (int i = minLength; i < second.size(); i++) {
-            System.out.print(second.get(i) + " ");
+    private static void addRestNumbers(List<Integer> firstListInput, List<Integer> firstAndSecondListCombined, int minLength) {
+        for (int i = minLength; i <= firstListInput.size() - 1; i++) {
+            firstAndSecondListCombined.add(firstListInput.get(i));
         }
     }
-}
 
+    private static void sumListsUntilMinLength(int minLength, List<Integer> firstList, List<Integer> secondList, List<Integer> newList) {
+        for (int i = 0; i < minLength; i++) {
+            newList.add(firstList.get(i));
+            newList.add(secondList.get(i));
+        }
+    }
+
+    private static int getMinLength(List<Integer> firstListInput, List<Integer> secondListInput) {
+        return Math.min(firstListInput.size(), secondListInput.size());
+    }
+
+    private static List<Integer> readIntArrayList(Scanner scanner) {
+        return Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+}
