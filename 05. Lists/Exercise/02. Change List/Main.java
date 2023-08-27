@@ -1,44 +1,51 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] numbersAsText = scanner.nextLine().split("\\s+");
-        List<Integer> numbers = new ArrayList<>();
-
-        for (String numberText : numbersAsText) {
-            int number = Integer.parseInt(numberText);
-            numbers.add(number);
-        }
+        List<Integer> list = readListOfInts(scanner);
 
         String input = scanner.nextLine();
-        while (!"end".equals(input)) {
-            String[] tokens = input.split("\\s+");
+        while (!input.equals("end")) {
+            String[] tokens = input.split(" ");
             String command = tokens[0];
-            Integer element = Integer.valueOf(tokens[1]);
+            int number = Integer.parseInt(tokens[1]);
+
             switch (command) {
-                case "Delete":
-                    while (numbers.contains(element)) {
-                        numbers.remove(element);
-                    }
-                    break;
-                case "Insert":
+                case "Delete" -> {
+                    deleteAllEqualElements(list, number);
+                }
+                case "Insert" -> {
                     int index = Integer.parseInt(tokens[2]);
-                    if (index >= 0 && index < numbers.size()) {
-                        numbers.add(index, element);
-                        break;
-                    }
+                    addElementAtGivenIndex(list, number, index);
+                }
             }
             input = scanner.nextLine();
         }
-        System.out.println(numbers.toString().replaceAll("[\\[\\],]", ""));
+        printResult(list);
+    }
+
+    private static void addElementAtGivenIndex(List<Integer> list, int number, int index) {
+        list.add(index, number);
+    }
+
+    private static void printResult(List<Integer> list) {
+        System.out.println(list.toString().replaceAll("[\\[\\],]", ""));
+    }
+
+
+    private static List<Integer> readListOfInts(Scanner scanner) {
+        return Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
+    private static void deleteAllEqualElements(List<Integer> list, int number) {
+        while (list.contains(number)) {
+            list.remove(Integer.valueOf(number));
+        }
     }
 }
-
-
-
-
-
