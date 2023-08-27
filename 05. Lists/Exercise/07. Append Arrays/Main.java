@@ -1,22 +1,29 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String[] input = scanner.nextLine().split("\\|");
-        List<String> result = new ArrayList<>();
 
-        for (int i = input.length-1; i >=0 ; i--) {
-            String[] temp = input[i].split("\\s+");
-            for (String s : temp) {
-                if (!"".equals(s)) {
-                    result.add(s);
-                }
+        String[] input = scanner.nextLine().split("\\|");
+        List<String> output = new ArrayList<>();
+
+        modifyArray(input, output);
+        printResult(output);
+    }
+
+    private static void modifyArray(String[] input, List<String> output) {
+        for (int i = input.length - 1; i >= 0; i--) {
+            String removeBlanks = input[i].replaceAll(" ", "");
+
+            for (int j = 0; j < removeBlanks.length(); j++) {
+                String numberString = removeBlanks.charAt(j) + " ";
+                output.add(numberString);
             }
         }
-        System.out.println(String.join(" ", result));
+    }
+
+    private static void printResult(List<String> output) {
+        System.out.println(output.toString().replaceAll("[\\[\\],]", ""));
     }
 }
 
