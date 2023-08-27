@@ -1,59 +1,60 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] lineOne = scanner.nextLine().split("\\s+");
-        List<Integer> playerOne = new ArrayList<>();
+        List<Integer> firstDeck = readIntegersFromConsole(scanner);
+        List<Integer> secondDeck = readIntegersFromConsole(scanner);
 
-        String[] lineTwo = scanner.nextLine().split("\\s+");
-        List<Integer> playerTwo = new ArrayList<>();
+        while (!(firstDeck.isEmpty() || secondDeck.isEmpty())) {
+            int playerOneCard = firstDeck.get(0);
+            int playerTwoCard = secondDeck.get(0);
 
-        for (String cardOne : lineOne) {
-            int number = Integer.parseInt(cardOne);
-            playerOne.add(number);
-        }
-
-        for (String cardTwo : lineTwo) {
-            int number = Integer.parseInt(cardTwo);
-            playerTwo.add(number);
-        }
-
-        while (!(playerOne.isEmpty() || playerTwo.isEmpty())) {
-            if (playerOne.get(0) > playerTwo.get(0)) {
-                playerOne.add(playerOne.get(0));
-                playerOne.add(playerTwo.get(0));
-                playerOne.remove(0);
-                playerTwo.remove(0);
-            } else if (playerOne.get(0) < playerTwo.get(0)) {
-                playerTwo.add(playerTwo.get(0));
-                playerTwo.add(playerOne.get(0));
-                playerTwo.remove(0);
-                playerOne.remove(0);
+            int result = playerOneCard - playerTwoCard;
+            if (result > 0) {
+                addCardsToWinningDeck(firstDeck, playerOneCard, playerTwoCard);
+                removeDrawnCardsFromBothDecks(firstDeck, secondDeck);
+            } else if (result < 0) {
+                addCardsToWinningDeck(secondDeck, playerTwoCard, playerOneCard);
+                removeDrawnCardsFromBothDecks(firstDeck, secondDeck);
             } else {
-                playerOne.remove(0);
-                playerTwo.remove(0);
+                removeDrawnCardsFromBothDecks(firstDeck, secondDeck);
             }
         }
-
-        if (playerOne.size() - 1 > playerTwo.size() - 1) {
-            int result = 0;
-            for (int playerOneCards : playerOne) {
-                result += playerOneCards;
-            }
-            System.out.printf("First player wins! Sum: %d", result);
-        } else {
-            int result = 0;
-            for (int playerTwoCards : playerTwo) {
-                result += playerTwoCards;
-            }
-            System.out.printf("Second player wins! Sum: %d", result);
-        }
-
+        printWinningDeck(firstDeck, secondDeck);
     }
+
+    private static void printWinningDeck(List<Integer> firstDeck, List<Integer> secondDeck) {
+        int firstDeckSum = firstDeck.stream().mapToInt(Integer::intValue).sum();
+        int secondDeckSum = secondDeck.stream().mapToInt(Integer::intValue).sum();
+
+        if (firstDeckSum > secondDeckSum) {
+            System.out.printf("First player wins! Sum: %d", firstDeckSum);
+        } else {
+            System.out.printf("Second player wins! Sum: %d", secondDeckSum);
+        }
+    }
+
+    private static void removeDrawnCardsFromBothDecks(List<Integer> firstDeck, List<Integer> secondDeck) {
+        firstDeck.remove(0);
+        secondDeck.remove(0);
+    }
+
+    private static void addCardsToWinningDeck(List<Integer> firstDeck, int playerOneCard, int playerTwoCard) {
+        firstDeck.add(playerOneCard);
+        firstDeck.add(playerTwoCard);
+    }
+
+    private static List<Integer> readIntegersFromConsole(Scanner scanner) {
+        return
+                Arrays.stream(scanner.nextLine()
+                        .split("\\s+"))
+                        .map(Integer::parseInt)
+                        .collect(Collectors.toList());
+    }
+
 }
 
 
