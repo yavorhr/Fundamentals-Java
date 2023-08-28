@@ -1,33 +1,30 @@
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         String[] words = scanner.nextLine().split(" ");
+        randomizeArrayElements(words);
+        printResult(words);
+    }
 
-        Random randomWord = new Random();
-        for (int i = 0; i < words.length; i++) {
-            int randomIndex = randomWord.nextInt(words.length);
-
-            String temp = words[i];
-            words[i] = words[randomIndex];
-            words[randomIndex] = temp;
-        }
-
+    private static void printResult(String[] words) {
         for (String word : words) {
             System.out.println(word);
         }
+    }
 
+    private static void randomizeArrayElements(String[] array) {
+        Random rnd = new Random();
+
+        for (int i = 0; i < array.length; i++) {
+            int randomIndex = rnd.nextInt(array.length);
+
+            String temp = array[i];
+            array[i] = array[randomIndex];
+            array[randomIndex] = temp;
+        }
     }
 }
-
-
-
-
-
-
-
 
