@@ -1,84 +1,37 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-    public static class Student {
-        private String firstName;
-        private String lastName;
-        private int age;
-        private String city;
-
-        Student(String firstName, String lastName, int age, String city) {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.age = age;
-            this.city = city;
-        }
-
-        public String getCity() {
-            return this.city;
-        }
-
-        public String getFirstName() {
-            return this.firstName;
-        }
-
-        public String getLastName() {
-            return this.lastName;
-        }
-
-        public int getAge() {
-            return this.age;
-        }
-
-        public void setCity(String city) {
-            this.city = city;
-        }
-    }
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String listOfStudents = scanner.nextLine();
-        List<Student> allStudents = new ArrayList<>();
+        List<Student> studentsList = new ArrayList<>();
 
-        while (!"end".equals(listOfStudents)) {
-            String[] tokens = listOfStudents.split(" ");
-            String firstName = tokens[0];
-            String lastName = tokens[1];
-            int age = Integer.parseInt(tokens[2]);
-            String city = tokens[3];
+        String input = scanner.nextLine();
 
-            Student currentStudent = new Student(firstName, lastName, age, city);
-            allStudents.add(currentStudent);
+        while (!input.equals("end")) {
+            addStudent(studentsList, input);
 
-            listOfStudents = scanner.nextLine();
+            input = scanner.nextLine();
         }
 
-        String city = scanner.nextLine();
+        String cityInput = scanner.nextLine();
+        printResult(studentsList, cityInput);
+    }
 
-        for (Student student : allStudents) {
-            if (city.equals(student.getCity())) {
-                System.out.printf("%s %s is %d years old%n", student.getFirstName(), student.getLastName(), student.getAge());
-            }
-        }
+    private static void printResult(List<Student> studentsList, String cityInput) {
+        studentsList.stream().filter(s -> s.getCity().equals(cityInput)).forEach(System.out::println);
+    }
 
+    private static void addStudent(List<Student> studentsList, String input) {
+        String[] tokens = input.split(" ");
+        String firstName = tokens[0];
+        String lastName = tokens[1];
+        int age = Integer.parseInt(tokens[2]);
+        String city = tokens[3];
+
+        Student student = new Student(firstName, lastName, age, city);
+        studentsList.add(student);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
