@@ -1,67 +1,43 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-    public static class Songs {
-        private String typeList;
-        private String name;
-        private String time;
-
-        public Songs(String typeList, String name, String time) {
-            this.typeList = typeList;
-            this.name = name;
-            this.time = time;
-        }
-
-        public String getTypeList() {
-            return this.typeList;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-    }
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        List<Songs> playlist = new ArrayList<>();
+        int n = Integer.parseInt(scanner.nextLine());
+        List<Song> songList = new ArrayList<>();
 
-        int countSongs = Integer.parseInt(scanner.nextLine());
-        for (int i = 0; i < countSongs; i++) {
-            String[] data = scanner.nextLine().split("_");
-            String typeList = data[0];
-            String name = data[1];
-            String time = data[2];
-
-            Songs currentSong = new Songs(typeList, name, time);
-            playlist.add(currentSong);
+        for (int i = 0; i < n; i++) {
+            String[] tokens = scanner.nextLine().split("_");
+            addSongToList(songList, tokens);
         }
 
-        String shuffle = scanner.nextLine();
+        String playListInput = scanner.nextLine();
+        printResult(songList, playListInput);
+    }
 
-        for (Songs song : playlist) {
-            if (shuffle.equals("all")) {
-                System.out.println(song.getName());
-            } else if (shuffle.equals(song.getTypeList())) {
-                System.out.println(song.getName());
-            }
+    private static void printResult(List<Song> songList, String playListInput) {
+        songList.stream()
+                .filter(s -> s.getTypeList().equals(playListInput))
+                .forEach(s -> System.out.println(s.getName()));
+
+        if (playListInput.equals("all")){
+            songList.forEach(s -> System.out.println(s.getName()));
         }
+    }
 
+    private static void addSongToList(List<Song> songList, String[]tokens) {
+        String playList = getString(tokens, 0);
+        String name = getString(tokens, 1);
+        String time = getString(tokens, 2);
+
+        Song currentSong = new Song(name, time, playList);
+        songList.add(currentSong);
+    }
+
+    private static String getString(String[] tokens, int index) {
+        return tokens[index];
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
