@@ -1,26 +1,23 @@
 import java.math.BigInteger;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        BigInteger numberOne = new BigInteger(scanner.nextLine());
-        BigInteger numberTwo = new BigInteger(scanner.nextLine());
+        BigInteger firstN = readBigInteger(scanner);
+        BigInteger secondN = readBigInteger(scanner);
 
-        BigInteger result = numberOne.add(numberTwo);
+        BigInteger result = sumBigIntegers(firstN, secondN);
         System.out.println(result);
     }
+
+    private static BigInteger sumBigIntegers(BigInteger firstN, BigInteger secondN) {
+        return firstN.add(secondN);
+    }
+
+    private static BigInteger readBigInteger(Scanner scanner) {
+        return new BigInteger(scanner.nextLine());
+    }
 }
-
-
-
-
-
-
-
-
-
-
 
