@@ -1,6 +1,6 @@
-class Person implements Comparable<Person> {
-    public String name;
-    public int age;
+public class Person {
+    private String name;
+    private int age;
 
     public Person(String name, int age) {
         this.name = name;
@@ -11,9 +11,22 @@ class Person implements Comparable<Person> {
         return name;
     }
 
+    public Person setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Person setAge(int age) {
+        this.age = age;
+        return this;
+    }
+
     @Override
-    public int compareTo(Person p) {
-        return this.getName().compareTo(p.getName());
+    public String toString() {
+        return String.format("%s - %d", this.name, this.age);
     }
 }
-
