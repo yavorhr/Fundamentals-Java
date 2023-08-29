@@ -1,51 +1,39 @@
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] articleData = scanner.nextLine().split(", ");
-        String initialTitle = articleData[0];
-        String initialContent = articleData[1];
-        String initialAuthor = articleData[2];
+        Article article = getArticle(scanner);
+        modifyArticle(scanner, article);
 
-        Article article = new Article(initialTitle, initialContent, initialAuthor);
+        System.out.println(article);
+    }
 
+    private static Article getArticle(Scanner scanner) {
+        String[] input = scanner.nextLine().split(" ");
+        String title = input[0];
+        String content = input[1];
+        String author = input[2];
+
+        return new Article(title, content, author);
+    }
+
+    private static void modifyArticle(Scanner scanner, Article article) {
         int n = Integer.parseInt(scanner.nextLine());
 
         for (int i = 0; i < n; i++) {
-            String[] tokens = scanner.nextLine().split(": ");
+            String input = scanner.nextLine();
+            String command = input.split(": ")[0];
+            String newValue = input.split(": ")[1];
 
-            String command = tokens[0];
-
-            String data = tokens[1];
             switch (command) {
-                case "Edit":
-                    article.edit(data);
-                    break;
-                case "ChangeAuthor":
-                    article.changeAuthor(data);
-                    break;
-                case "Rename":
-                    article.rename(data);
-                    break;
+                case "Edit" -> article.edit(newValue);
+                case "ChangeAuthor" -> article.changeAuthor(newValue);
+                case "Rename" -> article.rename(newValue);
             }
         }
-
-        System.out.println(article);
-
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
