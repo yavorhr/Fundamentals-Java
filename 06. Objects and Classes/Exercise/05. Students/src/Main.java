@@ -38,6 +38,7 @@ public class Main {
             Student student = new Student(firstName, secondName, grade);
             students.add(student);
         }
+
         students.sort(Comparator.comparingDouble(Student::getGrade).reversed());
         for (Student student : students) {
             System.out.println(student.toString());
