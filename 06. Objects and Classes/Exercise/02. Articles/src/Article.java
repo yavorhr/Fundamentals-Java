@@ -9,21 +9,47 @@ public class Article {
         this.author = author;
     }
 
-    public void edit(String newContent) {
-        this.content = newContent;
+    public void edit(String content) {
+        setContent(content);
     }
 
-    public void changeAuthor(String newAuthor) {
-        this.author = newAuthor;
+    public void changeAuthor(String author) {
+        setAuthor(author);
     }
 
-    public void rename(String newTitle) {
-        this.title = newTitle;
+    public void rename(String title) {
+        setTitle(title);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Article setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Article setContent(String content) {
+        this.content = content;
+        return this;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public Article setAuthor(String author) {
+        this.author = author;
+        return this;
     }
 
     @Override
     public String toString() {
-        return String.format("%s - %s: %s", this.title, this.content, this.author);
+        return String.format("%s - %s:%s", this.title, this.content, this.author);
     }
 }
-
