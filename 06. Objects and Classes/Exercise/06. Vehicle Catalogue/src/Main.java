@@ -1,58 +1,63 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
         List<Vehicle> vehicles = new ArrayList<>();
-        String addVehicle = scanner.nextLine();
-        while (!"End".equals(addVehicle)) {
-            String[] vehicleTokens = addVehicle.split(" ");
-            String typeOfVehicle = vehicleTokens[0];
-            String model = vehicleTokens[1];
-            String color = vehicleTokens[2];
-            double horsepower = Double.parseDouble(vehicleTokens[3]);
-            Vehicle currentVehicle = new Vehicle(typeOfVehicle, model, color, horsepower);
-            vehicles.add(currentVehicle);
-            addVehicle = scanner.nextLine();
+
+        String input = scanner.nextLine();
+        while (!input.equals("End")) {
+
+            addVehicleToList(vehicles, input);
+
+            input = scanner.nextLine();
         }
 
-        String carModel = scanner.nextLine();
-        while (!"Close the Catalogue".equals(carModel)) {
-            for (Vehicle vehicle : vehicles) {
-                if (carModel.equals(vehicle.getModel())) {
-                    System.out.println(vehicle.toString());
-                }
-            }
-            carModel = scanner.nextLine();
+        String modelInput = scanner.nextLine();
+        while (!modelInput.equals("Close the Catalogue")) {
+            String finalModelInput = modelInput;
+
+            printVehicleDataByModel(vehicles, finalModelInput);
+
+            modelInput = scanner.nextLine();
         }
 
-        double averageHpCars = averageHp(vehicles, "car");
-        System.out.printf("Cars have average horsepower of: %.2f.%n", averageHpCars);
-        double averageHptrucks = averageHp(vehicles, "truck");
-        System.out.printf("Trucks have average horsepower of: %.2f.", averageHptrucks);
+        double avgCarsHorsePower = getAverageVehicleHorsePower(vehicles, "car");
+        double avgTrucksHorsePower = getAverageVehicleHorsePower(vehicles, "truck");
+
+        printAvgHorsePower("Cars", avgCarsHorsePower);
+        printAvgHorsePower("Trucks", avgTrucksHorsePower);
     }
 
-    private static double averageHp(List<Vehicle> vehicles, String vehicleType) {
-        int vehicleCnt = 0;
-        for (Vehicle vehicle : vehicles) {
-            if (vehicleType.equals(vehicle.getTypeOfVehicle())) {
-                vehicleCnt++;
-            }
-        }
+    private static void printVehicleDataByModel(List<Vehicle> vehicles, String finalModelInput) {
+        vehicles.stream()
+                .filter(v -> v.getModel().equals(finalModelInput))
+                .forEach(System.out::println);
+    }
 
-        double averageHp = 0;
-        for (Vehicle vehicle : vehicles) {
-            if (vehicleType.equals(vehicle.getTypeOfVehicle())) {
-                averageHp = averageHp + vehicle.getHorsepower();
-            }
-        }
+    private static void printAvgHorsePower(String vehicleType, double averageCarsHorsePower) {
+        System.out.printf("%s have average horsepower of: %.2f.\n", vehicleType, averageCarsHorsePower);
+    }
 
-        averageHp = averageHp / vehicleCnt;
-        if (vehicleCnt==0){
-            return 0;
-        }
-        return averageHp;
+    private static double getAverageVehicleHorsePower(List<Vehicle> vehicles, String car) {
+        return vehicles.stream().
+                filter(v -> v.getTypeOfVehicle().equalsIgnoreCase(car))
+                .mapToDouble(Vehicle::getHorsePower)
+                .average()
+                .orElse(0);
+    }
+
+    private static void addVehicleToList(List<Vehicle> vehicles, String input) {
+        String[] tokens = input.split(" ");
+        String typeOfVehicle = tokens[0];
+        String model = tokens[1];
+        String color = tokens[2];
+        int horsePowers = Integer.parseInt(tokens[3]);
+        Vehicle vehicle = new Vehicle(typeOfVehicle, model, color, horsePowers);
+        vehicles.add(vehicle);
     }
 }
+
+
+
