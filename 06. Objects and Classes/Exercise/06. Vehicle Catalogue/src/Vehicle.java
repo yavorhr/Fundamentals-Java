@@ -2,37 +2,62 @@ public class Vehicle {
     private String typeOfVehicle;
     private String model;
     private String color;
-    private double horsepower;
+    private double horsePower;
 
-    public Vehicle(String typeOfVehicle, String model, String color, double horsepower) {
+    public Vehicle(String typeOfVehicle, String model, String color, double horsePower) {
         this.typeOfVehicle = typeOfVehicle;
         this.model = model;
         this.color = color;
-        this.horsepower = horsepower;
+        this.horsePower = horsePower;
     }
 
-    public String getModel() {
-        return this.model;
+    public String getColor() {
+        return this.color;
     }
 
-    public double getHorsepower() {
-        return this.horsepower;
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public String getTypeOfVehicle() {
-        return this.typeOfVehicle;
+        return typeOfVehicle;
+    }
+
+    public Vehicle setTypeOfVehicle(String typeOfVehicle) {
+        this.typeOfVehicle = typeOfVehicle;
+        return this;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public Vehicle setModel(String model) {
+        this.model = model;
+        return this;
+    }
+
+    public double getHorsePower() {
+        return horsePower;
+    }
+
+    public Vehicle setHorsePower(int horsePower) {
+        this.horsePower = horsePower;
+        return this;
     }
 
     @Override
     public String toString() {
-        String typeOfVehicleUpper = "";
+        String typeOfVehicle = "";
+
         if ("car".equalsIgnoreCase(this.typeOfVehicle)) {
-            typeOfVehicleUpper = "Car";
+            typeOfVehicle = "Car";
         } else if ("truck".equalsIgnoreCase(this.typeOfVehicle)) {
-            typeOfVehicleUpper = "Truck";
+            typeOfVehicle = "Truck";
         }
-        String output = String.format("Type: %s%nModel: %s%nColor: %s%nHorsepower: %.0f",
-                typeOfVehicleUpper, this.model, this.color, this.horsepower);
-        return output;
+        return String.format("Type: %s\n" +
+                "Model: %s\n" +
+                "Color: %s\n" +
+                "Horsepower: %.0f", typeOfVehicle,this.getModel(),this.getColor(),this.getHorsePower() );
     }
 }
