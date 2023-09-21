@@ -7,10 +7,11 @@ public class Main {
         int decimalNumber = readIntFromConsole(scanner);
         int digit = readIntFromConsole(scanner);
 
-        List<Integer> binarySequence = new ArrayList<>();
-        addBinaryValuesToList(binarySequence, decimalNumber);
+        int count = countBinaryNumber(decimalNumber, digit);
+        printResult(count);
+    }
 
-        long count = countBinaryDigit(binarySequence, digit);
+    private static void printResult(int count) {
         System.out.println(count);
     }
 
@@ -18,16 +19,18 @@ public class Main {
         return Integer.parseInt(scanner.nextLine());
     }
 
-    private static long countBinaryDigit(List<Integer> binarySequence, int digit) {
-        return binarySequence.stream().filter(n -> n == digit).count();
-    }
 
-    private static void addBinaryValuesToList(List<Integer> binarySequence, int decimalNumber) {
+    private static int countBinaryNumber(int decimalNumber, int digit) {
+        int count = 0;
+
         while (decimalNumber != 0) {
             int reminder = decimalNumber % 2;
-            binarySequence.add(reminder);
+            if (reminder == digit) {
+                count++;
+            }
             decimalNumber /= 2;
         }
+        return count;
     }
 }
 
