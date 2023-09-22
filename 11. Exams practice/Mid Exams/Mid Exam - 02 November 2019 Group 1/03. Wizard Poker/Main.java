@@ -1,73 +1,77 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] deckCardsText = scanner.nextLine().split(":");
-        List<String> deckCards = new ArrayList<>();
-        deckCards.addAll(Arrays.asList(deckCardsText));
+        List<String> deck =
+                Arrays.stream(scanner.nextLine()
+                        .split(":"))
+                        .collect(Collectors.toList());
+
         List<String> newDeck = new ArrayList<>();
 
         String input = scanner.nextLine();
         while (!"Ready".equals(input)) {
-
-            String[] tokens = input.split("\\s+");
+            String[] tokens = input.split(" ");
             String command = tokens[0];
-            String cardName = tokens[1];
+            String card = tokens[1];
 
             switch (command) {
-                case "Add":
-                    if (deckCards.contains(cardName)) {
-                        newDeck.add(cardName);
+                case "Add" -> {
+                    if (deckContainsCard(card, deck)) {
+                        addCardToDeck(card, newDeck);
                     } else {
-                        System.out.println("Card not found.");
+                        printNotFoundMsg("Card not found");
                     }
-                    break;
-                case "Insert":
+                }
+                case "Insert" -> {
                     int index = Integer.parseInt(tokens[2]);
-                    if (deckCards.contains(cardName) && index >= 0 && index < newDeck.size()) {
-                        newDeck.add(index, cardName);
+                    if (deckContainsCard(card, deck) && indexIsValid(index, newDeck)) {
+                        newDeck.add(index, card);
                     } else {
-                        System.out.println("Error!");
+                        printNotFoundMsg("Error!");
                     }
-                    break;
-                case "Remove":
-                    if (newDeck.contains(cardName)) {
-                        newDeck.remove(cardName);
+                }
+                case "Remove" -> {
+                    if (deckContainsCard(card, newDeck)) {
+                        newDeck.remove(card);
                     } else {
-                        System.out.println("Card not found.");
+                        printNotFoundMsg("Card not found");
                     }
-                    break;
-                case "Swap":
-                    String otherCard = tokens[2];
-                    Collections.swap(newDeck, newDeck.indexOf(cardName), newDeck.indexOf(otherCard));
-                    break;
-                default:
-                    Collections.reverse(newDeck);
+                }
+                case "Swap" -> {
+                    String secondCard = tokens[2];
+                    Collections.swap(newDeck, newDeck.indexOf(card), newDeck.indexOf(secondCard));
+                }
+                case "Shuffle" -> Collections.reverse(newDeck);
             }
             input = scanner.nextLine();
         }
         System.out.println(String.join(" ", newDeck));
     }
+
+    private static boolean indexIsValid(int index, List<String> newDeck) {
+        return index >= 0 && index < newDeck.size();
+    }
+
+    private static void printNotFoundMsg(String message) {
+        System.out.println(message);
+    }
+
+    private static boolean deckContainsCard(String card, List<String> deck) {
+        if (!deck.contains(card)) {
+            return false;
+        }
+        return true;
+    }
+
+    private static void addCardToDeck(String card, List<String> newDeck) {
+        newDeck.add(card);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
