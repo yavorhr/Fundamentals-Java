@@ -4,51 +4,38 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        double experienceToLevelUp = Double.parseDouble(scanner.nextLine());
-        int battlesCnt = Integer.parseInt(scanner.nextLine());
-        int counter = 0;
-        double earnedExp = 0;
-        boolean levelUp = false;
+        int requiredExp = Integer.parseInt(scanner.nextLine());
+        int battlesCount = Integer.parseInt(scanner.nextLine());
 
-        for (int i = 0; i < battlesCnt; i++) {
-            double currentExp = Double.parseDouble(scanner.nextLine());
-            counter++;
+        double currentExp = 0;
 
-            if (counter % 3 == 0) {
-                currentExp *= 1.15;
-            }
-            if (counter % 5 == 0) {
-                currentExp *= 0.9;
-            }
-            earnedExp += currentExp;
-            if (earnedExp >= experienceToLevelUp) {
-                levelUp = true;
+        for (int i = 1; i <= battlesCount; i++) {
+            double experiencePerBattle = Double.parseDouble(scanner.nextLine());
+
+            currentExp = addExpPerBattle(currentExp, i, experiencePerBattle);
+
+            if (currentExp >= requiredExp) {
+                System.out.printf("Player successfully collected his needed experience for %d battles.", i);
                 break;
             }
         }
 
-        if (levelUp) {
-            System.out.printf("Player successfully collected his needed experience for %d battles.",counter);
-        } else {
-            System.out.printf("Player was not able to collect the needed experience, %.2f more needed.",experienceToLevelUp-earnedExp);
+        if (requiredExp > currentExp) {
+            System.out.printf("Player was not able to collect the needed experience, %.2f more needed.", requiredExp - currentExp);
         }
     }
+
+    private static double addExpPerBattle(double currentExp, int i, double experiencePerBattle) {
+        if (i % 3 == 0) {
+            currentExp += experiencePerBattle * 1.15;
+        } else if (i % 5 == 0) {
+            currentExp += experiencePerBattle * 0.9;
+        } else {
+            currentExp += experiencePerBattle;
+        }
+        return currentExp;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
