@@ -5,72 +5,75 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         String[] names = scanner.nextLine().split(", ");
-        int blackListedCnt = 0;
-        int lostNames = 0;
 
         String input = scanner.nextLine();
         while (!"Report".equals(input)) {
-            String[] token = input.split(" ");
-            String command = token[0];
-            boolean notFound = true;
+            String[] tokens = input.split(" ");
+            String command = tokens[0];
 
             switch (command) {
-                case "Blacklist":
-                    String name = (token[1]);
-                    for (int i = 0; i < names.length; i++) {
-                        if (!(names[i].equals("Blacklisted") || names[i].equals("Lost"))) {
-                            if (names[i].equals(name)) {
-                                System.out.printf("%s was blacklisted.%n", names[i]);
-                                names[i] = "Blacklisted";
-                                notFound = false;
-                                blackListedCnt++;
-                                break;
-                            }
-                        }
+                case "Blacklist" -> {
+                    String nameInput = tokens[1];
+                    String currentName = getName(names, nameInput);
+
+                    if (!currentName.equals("")) {
+                        printResult(nameInput, "was blacklisted.");
+                        int index = Arrays.asList(names).indexOf(nameInput);
+                        names[index] = "Blacklisted";
+                    } else {
+                        printResult(nameInput, "was not found.");
                     }
-                    break;
-                case "Error":
-                    int index = Integer.parseInt(token[1]);
-                    if (!((names[index].equals("Blacklisted") || names[index].equals("Lost")))) {
-                        System.out.printf("%s was lost due to an error.%n", names[index]);
+                }
+                case "Error" -> {
+                    int index = Integer.parseInt(tokens[1]);
+                    String nameInput = names[index];
+                    String currentName = getName(names, nameInput);
+
+                    if (!currentName.equals("Blacklisted") && !currentName.equals("Lost")) {
+                        printResult(nameInput, "was lost due to an error.");
                         names[index] = "Lost";
-                        lostNames++;
                     }
-                    break;
-                case "Change":
-                    index = Integer.parseInt(token[1]);
-                    String newName = token[2];
-                    if (index >= 0 && index < names.length) {
-                        if (!(names[index].equals("Blacklisted") && names[index].equals("Lost"))) {
-                            System.out.printf("%s changed his username to %s.%n", names[index], newName);
-                            names[index] = newName;
-                        }
+                }
+                case "Change" -> {
+                    int index = Integer.parseInt(tokens[1]);
+                    String newName = tokens[2];
+
+                    if (indexIsValid(names, index)) {
+                        System.out.printf("%s changed his username to %s.\n", names[index], newName);
+                        names[index] = newName;
                     }
+                }
             }
             input = scanner.nextLine();
         }
-        System.out.printf("Blacklisted names: %d%n", blackListedCnt);
-        System.out.printf("Lost names: %d%n", lostNames);
-        System.out.println(String.join(" ", names));
+        printCollection(names);
+    }
+
+    private static long filterArray(String[] array, String criteria) {
+        return Arrays.stream(array).filter(n -> n.equals(criteria)).count();
+    }
+
+    private static String getName(String[] names, String nameInput) {
+        return Arrays.stream(names).filter(n -> n.equals(nameInput)).findFirst().orElse("");
+    }
+
+    private static boolean indexIsValid(String[] names, int index) {
+        return index >= 0 && index < names.length;
+    }
+
+    private static void printCollection(String[] array) {
+        long blackListed = filterArray(array, "Blacklisted");
+        long lost = filterArray(array, "Lost");
+
+        System.out.printf("Blacklisted names: %d\n", blackListed);
+        System.out.printf("Lost names: %d\n", lost);
+        System.out.println(String.join(" ", array));
+    }
+
+    private static void printResult(String name, String message) {
+        System.out.printf("%s %s\n", name, message);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
