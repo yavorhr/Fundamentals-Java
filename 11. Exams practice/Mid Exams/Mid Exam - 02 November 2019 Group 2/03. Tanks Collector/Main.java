@@ -1,78 +1,89 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] tanksText = scanner.nextLine().split(", ");
-        List<String> tanks = new ArrayList<>();
-        tanks.addAll(Arrays.asList(tanksText));
+        List<String> ownedTanks =
+                Arrays.stream(scanner.nextLine()
+                        .split(", "))
+                        .collect(Collectors.toList());
 
         int n = Integer.parseInt(scanner.nextLine());
+
         for (int i = 0; i < n; i++) {
             String[] tokens = scanner.nextLine().split(", ");
             String command = tokens[0];
 
             switch (command) {
-                case "Add":
-                    String tankToAdd = tokens[1];
-                    if (!tanks.contains(tankToAdd)) {
-                        System.out.println("Tank successfully bought");
-                        tanks.add(tankToAdd);
+                case "Add" -> {
+                    String tankName = tokens[1];
+                    String tank = getTank(ownedTanks, tankName);
+                    if (tank.equals("")) {
+                        ownedTanks.add(tankName);
+                        printResult("Tank successfully bought");
                     } else {
-                        System.out.println("Tank is already bought");
+                        printResult("Tank is already bought");
                     }
-                    break;
-                case "Remove":
-                    String tankToRemove = tokens[1];
-                    if (tanks.contains(tankToRemove)) {
-                        System.out.println("Tank successfully sold");
-                        tanks.remove(tankToRemove);
+                }
+                case "Remove" -> {
+                    String tankName = tokens[1];
+                    String tank = getTank(ownedTanks, tankName);
+                    if (tank.equals("")) {
+                        printResult("Tank not found");
                     } else {
-                        System.out.println("Tank not found");
+                        ownedTanks.remove(tankName);
+                        printResult("Tank successfully sold");
                     }
-                    break;
-                case "Remove At":
-                    int indexToRemove = Integer.parseInt(tokens[1]);
-                    if (indexToRemove >= 0 && indexToRemove < tanks.size()) {
-                        tanks.remove(indexToRemove);
-                        System.out.println("Tank successfully sold");
+                }
+                case "Remove At" -> {
+                    int index = Integer.parseInt(tokens[1]);
+                    if (indexIsValid(index, ownedTanks)) {
+                        ownedTanks.remove(index);
+                        printResult("Tank successfully sold");
                     } else {
-                        System.out.println("Index out of range");
+                        printResult("Index out of range");
                     }
-                    break;
-                case "Insert":
-                    int indexToInsert = Integer.parseInt(tokens[1]);
-                    String newTank = tokens[2];
-                    if (indexToInsert >= 0 && indexToInsert < tanks.size() && !tanks.contains(newTank)) {
-                        tanks.add(indexToInsert, newTank);
-                        System.out.println("Tank successfully bought");
-                    } else if (indexToInsert >= 0 && indexToInsert < tanks.size() && tanks.contains(newTank)) {
-                        System.out.println("Tank is already bought");
+                }
+                case "Insert" -> {
+                    int index = Integer.parseInt(tokens[1]);
+                    String tankInput = tokens[2];
+                    String currentTank = getTank(ownedTanks, tankInput);
+
+                    if (indexIsValid(index, ownedTanks) && currentTank.equals("")) {
+                        printResult("Tank successfully bought");
+                        ownedTanks.add(tankInput);
+                    } else if (indexIsValid(index, ownedTanks) && !currentTank.equals("")) {
+                        printResult("Tank is already bought");
                     } else {
-                        System.out.println("Index out of range");
+                        printResult("Index out of range");
                     }
-                    break;
+                }
             }
         }
-        System.out.println(String.join(", ", tanks));
+        printCollection(ownedTanks);
+    }
+
+    private static void printCollection(List<String> ownedTanks) {
+        System.out.println(String.join(", ", ownedTanks));
+    }
+
+    private static boolean indexIsValid(int index, List<String> ownedTanks) {
+        return index >= 0 && index < ownedTanks.size();
+    }
+
+    private static void printResult(String message) {
+        System.out.println(message);
+    }
+
+    private static String getTank(List<String> ownedTanks, String tankName) {
+        return ownedTanks.stream()
+                .filter(t -> t.equals(tankName))
+                .findFirst()
+                .orElse("");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
