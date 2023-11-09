@@ -1,96 +1,84 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] inputText = scanner.nextLine().split("\\s+");
-        List<String> collection = new ArrayList<>();
-        collection.addAll(Arrays.asList(inputText));
-
+        List<Integer> numbers = getList(scanner);
         String input = scanner.nextLine();
+
         while (!"END".equals(input)) {
-            String[] tokens = input.split("\\s+");
+            String[] tokens = input.split(" ");
             String command = tokens[0];
 
             switch (command) {
-                case "Change":
-                    String paintingNumber = tokens[1];
-                    int index = collection.indexOf(paintingNumber);
-                    String changeNumber = tokens[2];
-                    if (collection.contains(paintingNumber)) {
-                        collection.set(index, changeNumber);
-                    }
-                    break;
-                case "Hide":
-                    String paintingToHide = tokens[1];
-                    if (collection.contains(paintingToHide)) {
-                        collection.remove(paintingToHide);
-                    }
-                    break;
-                case "Switch":
-                    String paintingOne = tokens[1];
-                    String paintingTwo = tokens[2];
-                    if (collection.contains(paintingTwo) && collection.contains(paintingOne)) {
-                        int indexOne = collection.indexOf(paintingOne);
-                        int indexTwo = collection.indexOf(paintingTwo);
-                        Collections.swap(collection, indexOne, indexTwo);
-                    }
-                    break;
-                case "Insert":
-                    int place = Integer.parseInt(tokens[1]);
-                    int desiredIndex = place + 1;
-                    String paintingToInsert = tokens[2];
-                    if (desiredIndex >= 0 && desiredIndex < collection.size()) {
-                        collection.add(desiredIndex, paintingToInsert);
-                    }
-                    break;
-                case "Reverse":
-                    Collections.reverse(collection);
-                    break;
-            }
+                case "Insert" -> {
+                    int index = Integer.parseInt(tokens[1]);
+                    int paintingNumber = Integer.parseInt(tokens[2]);
 
+                    if (indexIsValid(index, numbers)) {
+                        numbers.add(index + 1, paintingNumber);
+                    }
+                }
+
+                case "Switch" -> {
+                    int firstNumber = Integer.parseInt(tokens[1]);
+                    int secondNumber = Integer.parseInt(tokens[2]);
+
+                    if (ifListContainsNumber(numbers, firstNumber) && ifListContainsNumber(numbers, secondNumber)) {
+                        int firstNumberIndex = getIndex(numbers, firstNumber);
+                        int secondNumberIndex = getIndex(numbers, secondNumber);
+
+                        numbers.set(firstNumberIndex, secondNumber);
+                        numbers.set(secondNumberIndex, firstNumber);
+                    }
+                }
+                case "Hide" -> {
+                    int paintingNumber = Integer.parseInt(tokens[1]);
+                    int index = getIndex(numbers, paintingNumber);
+
+                    if (ifListContainsNumber(numbers, paintingNumber)) {
+                        numbers.remove(index);
+                    }
+                }
+                case "Reverse" -> {
+                    Collections.reverse(numbers);
+                }
+                case "Change" -> {
+                    int paintingNumber = Integer.parseInt(tokens[1]);
+                    int changedNumber = Integer.parseInt(tokens[2]);
+
+                    if (ifListContainsNumber(numbers, paintingNumber)) {
+                        int indexNumber = getIndex(numbers, paintingNumber);
+                        numbers.set(indexNumber, changedNumber);
+                    }
+                }
+            }
             input = scanner.nextLine();
         }
-        System.out.println(String.join(" ", collection));
+        System.out.println(numbers);
+    }
+
+    private static int getIndex(List<Integer> numbers, int firstNumber) {
+        return numbers.indexOf(firstNumber);
+    }
+
+    private static List<Integer> getList(Scanner scanner) {
+        return Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
+    private static boolean ifListContainsNumber(List<Integer> numbers, int number) {
+        return numbers.contains(number);
+    }
+
+    private static boolean indexIsValid(int index, List<Integer> numbers) {
+        return index >= 0 && index < numbers.size();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
