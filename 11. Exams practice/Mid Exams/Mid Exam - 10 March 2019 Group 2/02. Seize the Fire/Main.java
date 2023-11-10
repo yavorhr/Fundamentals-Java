@@ -6,87 +6,75 @@ public class Main {
 
         String[] input = scanner.nextLine().split("#");
         int water = Integer.parseInt(scanner.nextLine());
-
-        List<Integer> result = new ArrayList<>();
         double effort = 0;
 
-        for (int i = 0; i < input.length; i++) {
-            String[] cellSplit = input[i].split(" = ");
-            String typeOfFire = cellSplit[0];
-            int value = Integer.parseInt(cellSplit[1]);
+        List<Integer> cells = new ArrayList<>();
+
+        for (String s : input) {
+            String[] tokens = s.split(" ");
+            String typeOfFire = tokens[0];
+            int range = Integer.parseInt(tokens[2]);
+
             switch (typeOfFire) {
-                case "High":
-                    if (value >= 81 && value <= 125 && water - value >= 0) {
-                        result.add(value);
-                        water -= value;
-                        double currentEffort = value * 0.25;
-                        effort += currentEffort;
+                case "High" -> {
+                    if (checkRange(range, 81, 125)) {
+                        if (isWaterSufficient(water, range)) {
+                            water = subtractWater(water, range);
+                            effort = addEffort(effort, range);
+                            cells.add(range);
+                        }
                     }
-                    break;
-                case "Medium":
-                    if (value >= 51 && value <= 80 && water - value >= 0) {
-                        result.add(value);
-                        water -= value;
-                        double currentEffort = value * 0.25;
-                        effort += currentEffort;
+                }
+                case "Medium" -> {
+                    if (checkRange(range, 51, 80)) {
+                        if (isWaterSufficient(water, range)) {
+                            water = subtractWater(water, range);
+                            effort = addEffort(effort, range);
+                            cells.add(range);
+                        }
                     }
-                    break;
-                case "Low":
-                    if (value >= 1 && value <= 50 && water - value >= 0) {
-                        result.add(value);
-                        water -= value;
-                        double currentEffort = value * 0.25;
-                        effort += currentEffort;
-                        break;
+                }
+                case "Low" -> {
+                    if (checkRange(range, 1, 50)) {
+                        if (isWaterSufficient(water, range)) {
+                            water = subtractWater(water, range);
+                            effort = addEffort(effort, range);
+                            cells.add(range);
+                        }
                     }
+                }
             }
         }
+        printResult(cells, effort);
+    }
 
-        int sum = 0;
+    private static double addEffort(double effort, int range) {
+        effort += 0.25 * range;
+        return effort;
+    }
+
+    private static int subtractWater(int water, int range) {
+        water -= range;
+        return water;
+    }
+
+    private static boolean isWaterSufficient(int water, int range) {
+        return water - range > 0;
+    }
+
+    private static void printResult(List<Integer> cells, double effort) {
         System.out.println("Cells:");
-        for (int i = 0; i < result.size(); i++) {
-            sum += result.get(i);
-            System.out.printf(" - %d%n", result.get(i));
+        cells.forEach(s -> System.out.printf("- %d\n", s));
+        System.out.printf("Effort: %.2f\n", effort);
 
-        }
-
-        System.out.printf("Effort: %.2f%n", effort);
+        int sum = cells.stream().reduce(0, (a, b) -> a + b);
         System.out.printf("Total Fire: %d", sum);
+    }
 
+    private static boolean checkRange(int range, int lowBound, int highBound) {
+        return range >= lowBound && range <= highBound;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
