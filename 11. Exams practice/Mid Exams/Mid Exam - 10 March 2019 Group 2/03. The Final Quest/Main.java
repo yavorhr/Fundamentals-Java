@@ -1,95 +1,79 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] inputText = scanner.nextLine().split("\\s+");
-        List<String> words = new ArrayList<>();
-        for (String s : inputText) {
-            words.add(s);
-        }
+        List<String> words =
+                Arrays.stream(scanner.nextLine()
+                        .split(" "))
+                        .collect(Collectors.toList());
 
         String input = scanner.nextLine();
         while (!"Stop".equals(input)) {
-            String[] tokens = input.split("\\s+");
+            String[] tokens = input.split(" ");
             String command = tokens[0];
 
             switch (command) {
-                case "Delete":
+                case "Delete" -> {
                     int index = Integer.parseInt(tokens[1]);
-                    int resultIndex = index + 1;
-                    if (resultIndex >= 0 && resultIndex < words.size()) {
-                        words.remove(resultIndex);
+                    if (indexIsValid(words, index)) {
+                        words.remove(index + 1);
                     }
-                    break;
-                case "Swap":
+                }
+                case "Swap" -> {
                     String firstWord = tokens[1];
                     String secondWord = tokens[2];
-                    if (words.contains(firstWord) && words.contains(secondWord)) {
-                        Collections.swap(words, words.indexOf(firstWord), words.indexOf(secondWord));
+
+                    if (swapIsPossible(firstWord, secondWord, words)) {
+                        swapWordsByIndexes(words, firstWord, secondWord);
                     }
-                    break;
-                case "Put":
-                    String wordToPut = tokens[1];
-                    int indexToPut = Integer.parseInt(tokens[2]);
-                    int previousIndex = indexToPut - 1;
-                    if (previousIndex >= 0 && previousIndex <= words.size()) {
-                        words.add(previousIndex, wordToPut);
+                }
+                case "Put" -> {
+                    String word = tokens[1];
+                    int index = Integer.parseInt(tokens[1]);
+                    int desiredIndex = index - 1;
+
+                    if (indexIsValid(words, desiredIndex)) {
+                        words.add(desiredIndex, word);
                     }
-                    break;
-                case "Sort":
+                }
+                case "Sort" -> {
                     Collections.sort(words);
-                    Collections.reverse(words);
-                    break;
-                case "Replace":
-                    String wordOne = tokens[1];
-                    String wordTwo = tokens[2];
-                    int indexOfWordTwo = words.indexOf(wordTwo);
-                    if (words.contains(wordTwo)) {
-                        words.remove(indexOfWordTwo);
-                        words.add(indexOfWordTwo,wordOne);
+                }
+                case "Replace" -> {
+                    String firstWord = tokens[1];
+                    int index = words.indexOf(firstWord);
+                    String secondWord = tokens[2];
+
+                    if (words.contains(firstWord)) {
+                        words.set(index, secondWord);
                     }
-                    break;
+                }
             }
 
             input = scanner.nextLine();
         }
-        System.out.println(String.join(" ", words));
+
+    }
+
+    private static void swapWordsByIndexes(List<String> words, String firstWord, String secondWord) {
+        int indexFirstWord = words.indexOf(firstWord);
+        int indexSecondWord = words.indexOf(secondWord);
+
+        words.set(indexFirstWord, secondWord);
+        words.set(indexSecondWord, firstWord);
+    }
+
+    private static boolean indexIsValid(List<String> arrayList, int index) {
+        return index >= 0 && index < arrayList.size();
+    }
+
+    private static boolean swapIsPossible(String firstWord, String secondWord, List<String> arrayList) {
+        return arrayList.contains(firstWord) && arrayList.contains(secondWord);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
