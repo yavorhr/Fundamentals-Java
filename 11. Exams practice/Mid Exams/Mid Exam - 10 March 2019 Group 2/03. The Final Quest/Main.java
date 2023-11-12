@@ -32,7 +32,7 @@ public class Main {
                 }
                 case "Put" -> {
                     String word = tokens[1];
-                    int index = Integer.parseInt(tokens[1]);
+                    int index = Integer.parseInt(tokens[2]);
                     int desiredIndex = index - 1;
 
                     if (indexIsValid(words, desiredIndex)) {
@@ -44,18 +44,21 @@ public class Main {
                 }
                 case "Replace" -> {
                     String firstWord = tokens[1];
-                    int index = words.indexOf(firstWord);
                     String secondWord = tokens[2];
 
-                    if (words.contains(firstWord)) {
-                        words.set(index, secondWord);
+                    if (words.contains(secondWord)) {
+                        int indexSecondWord = words.indexOf(secondWord);
+                        words.set(indexSecondWord, firstWord);
                     }
                 }
             }
-
             input = scanner.nextLine();
         }
+        printResult(words);
+    }
 
+    private static void printResult(List<String> words) {
+        System.out.println(String.join(" ", words));
     }
 
     private static void swapWordsByIndexes(List<String> words, String firstWord, String secondWord) {
