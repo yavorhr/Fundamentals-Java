@@ -1,53 +1,59 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] text = scanner.nextLine().split("!");
-        List<String> shoppingList = new ArrayList<>();
-        shoppingList.addAll(Arrays.asList(text));
+        List<String> shoppingList =
+                Arrays.stream(scanner.nextLine()
+                        .split("!"))
+                        .collect(Collectors.toList());
 
         String input = scanner.nextLine();
         while (!"Go Shopping!".equals(input)) {
-            String[] tokens = input.split("\\s+");
+            String[] tokens = input.split(" ");
             String command = tokens[0];
-            String item = tokens[1];
+            String product = tokens[1];
+
             switch (command) {
-                case "Urgent":
-                    if (!shoppingList.contains(item)) {
-                        shoppingList.add(0, item);
+                case "Urgent" -> {
+                    if (!isProductExisting(shoppingList, product)) {
+                        shoppingList.add(0, product);
                     }
-                    break;
-                case "Unnecessary":
-                    if (shoppingList.contains(item)) {
-                        shoppingList.remove(item);
-                    }
-                    break;
-                case "Correct":
+                }
+                case "Unnecessary" -> {
+                    shoppingList.remove(product);
+                }
+                case "Correct" -> {
                     String newItem = tokens[2];
-                    if (shoppingList.contains(item)) {
-                        shoppingList.set(shoppingList.indexOf(item), newItem);
+
+                    if (isProductExisting(shoppingList, product)) {
+                        int index = shoppingList.indexOf(product);
+                        shoppingList.set(index, newItem);
                     }
-                    break;
-                case "Rearrange":
-                    if (shoppingList.contains(item)) {
-                        shoppingList.remove(item);
-                        shoppingList.add(item);
-                        break;
+
+                }
+                case "Rearrange" -> {
+                    if (isProductExisting(shoppingList, product)) {
+                        shoppingList.remove(product);
+                        shoppingList.add(product);
                     }
+                }
             }
             input = scanner.nextLine();
-
         }
+        printShoppingList(shoppingList);
+    }
+
+    private static void printShoppingList(List<String> shoppingList) {
         System.out.println(String.join(", ", shoppingList));
     }
+
+    private static boolean isProductExisting(List<String> shoppingList, String item) {
+        return shoppingList.contains(item);
+    }
 }
-
-
-
-
-
 
 
 
