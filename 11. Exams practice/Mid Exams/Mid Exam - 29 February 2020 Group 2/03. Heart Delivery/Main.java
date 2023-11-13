@@ -4,58 +4,48 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] input = scanner.nextLine().split("@");
-        int[] houses = new int[input.length];
-        for (int i = 0; i < houses.length; i++) {
-            houses[i] = Integer.parseInt(input[i]);
-        }
+        int[] houses = Arrays.stream(scanner.nextLine()
+                .split("@"))
+                .mapToInt(Integer::parseInt).toArray();
 
         int currentIndex = 0;
-        String text = scanner.nextLine();
-        while (!"Love!".equals(text)) {
-            String[] tokens = text.split(" ");
-            int jumpLength = Integer.parseInt(tokens[1]);
-            currentIndex += jumpLength;
 
-            if (currentIndex > houses.length - 1) {
+        String input = scanner.nextLine();
+        while (!"Love!".equals(input)) {
+            String[] tokens = input.split(" ");
+            int jump = Integer.parseInt(tokens[1]);
+            currentIndex += jump;
+
+            if (currentIndex >= houses.length) {
                 currentIndex = 0;
             }
 
-            if (houses[currentIndex] != 0) {
-                houses[currentIndex] -= 2;
-                if (houses[currentIndex] == 0) {
-                    System.out.printf("Place %d has Valentine's day.%n", currentIndex);
-                }
+            if (doesElementEqualToZero(houses[currentIndex])) {
+                System.out.printf("Place %d already had Valentine's day.\n", currentIndex);
             } else {
-                System.out.printf("Place %d already had Valentine's day.%n", currentIndex);
+                houses[currentIndex] -= 2;
+                if (doesElementEqualToZero(houses[currentIndex])) {
+                    System.out.printf("Place %d has Valentine's day.\n", currentIndex);
+                }
             }
-            text = scanner.nextLine();
-        }
-        System.out.printf("Cupid's last position was %d.%n", currentIndex);
-
-        int counter = 0;
-
-        boolean isSuccessful = true;
-        for (int house : houses) {
-            if (house != 0) {
-                counter++;
-                isSuccessful = false;
-            }
+            input = scanner.nextLine();
         }
 
-        if (isSuccessful) {
+        int sum = Arrays.stream(houses).sum();
+
+        if (doesElementEqualToZero(sum)) {
             System.out.println("Mission was successful.");
         } else {
-            System.out.printf("Cupid has failed %d places.", counter);
+            long count = Arrays.stream(houses).filter(h -> h != 0).count();
+            System.out.printf("Cupid's last position was %d.\n", currentIndex);
+            System.out.printf("Cupid has failed %d places.\n", count);
         }
     }
+
+    private static boolean doesElementEqualToZero(int house) {
+        return house == 0;
+    }
 }
-
-
-
-
-
-
 
 
 
