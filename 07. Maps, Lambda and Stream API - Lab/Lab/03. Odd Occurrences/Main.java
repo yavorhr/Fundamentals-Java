@@ -4,33 +4,41 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] words = scanner.nextLine().split(" ");
-        Map<String, Integer> occurrences = new LinkedHashMap<>();
+        String[] input =
+                Arrays.stream(scanner.nextLine()
+                        .split(" "))
+                        .map(String::toLowerCase)
+                        .toArray(String[]::new);
 
-        for (String word : words) {
-            String wordInLowerCase = word.toLowerCase();
-            if (occurrences.containsKey(wordInLowerCase)) {
-                Integer count = occurrences.get(wordInLowerCase);
-                occurrences.put(wordInLowerCase, count + 1);
-            } else {
-                occurrences.put(wordInLowerCase, 1);
-            }
+        LinkedHashMap<String, Integer> hashMap = new LinkedHashMap<>();
+
+        List<String> odds = new ArrayList<>();
+
+        for (String word : input) {
+            hashMap.putIfAbsent(word, 0);
+
+            addCountIfWordExists(hashMap, word);
         }
 
-        List<String> oddWords = new ArrayList<>();
-        for (var entry : occurrences.entrySet()) {
-            if (entry.getValue() % 2 == 1) {
-                oddWords.add(entry.getKey());
+        hashMap.forEach((key, value) -> {
+            if (value % 2 != 0) {
+                odds.add(key);
             }
-        }
+        });
 
-        for (int i = 0; i < oddWords.size(); i++) {
-            System.out.print(oddWords.get(i));
-            if (i < oddWords.size() - 1) {
-                System.out.print(", ");
-            }
-        }
+        printResult(odds);
+    }
 
+    private static void printResult(List<String> odds) {
+        System.out.println(String.join(", ", odds));
+    }
+
+    private static void addCountIfWordExists(LinkedHashMap<String, Integer> hashMap, String word) {
+        int count = hashMap.get(word);
+        count += 1;
+
+        hashMap.put(word, count);
     }
 }
+
 
