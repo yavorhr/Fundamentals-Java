@@ -4,37 +4,50 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, String> registered = new LinkedHashMap<>();
+        int n = Integer.parseInt(scanner.nextLine());
+        HashMap<String, String> registeredUsers = new HashMap<>();
 
-        int commandsCount = Integer.parseInt(scanner.nextLine());
-        for (int i = 0; i < commandsCount; i++) {
-            String[] tokens = scanner.nextLine().split("\\s+");
+        for (int i = 0; i < n; i++) {
+            String[] tokens = scanner.nextLine().split(" ");
             String command = tokens[0];
-            if (command.equals("register")) {
-                String name = tokens[1];
-                String licensePlateNumber = tokens[2];
+            String username = tokens[1];
 
-                if (registered.containsKey(name)) {
-                    System.out.println(String.format("ERROR: already registered with plate number %s", licensePlateNumber));
-                } else {
-                    registered.put(name, licensePlateNumber);
-                    System.out.println(String.format("%s registered %s successfully", name, licensePlateNumber));
+            switch (command) {
+                case "register" -> {
+                    String licensePlateNumber = tokens[2];
+
+                    if (doesUserKeyExist(registeredUsers, username)) {
+                        String alreadyRegisteredPlateNumber = registeredUsers.get(username);
+                        System.out.printf("ERROR: already registered with plate number %s\n", alreadyRegisteredPlateNumber);
+                    } else {
+                        registeredUsers.put(username, licensePlateNumber);
+                        System.out.printf("%s registered %s successfully\n", username, licensePlateNumber);
+                    }
                 }
-            } else if (command.equals("unregister")) {
-                String name = tokens[1];
-                if (registered.containsKey(name)) {
-                    registered.remove(name);
-                    System.out.println(String.format("%s unregistered successfully", name));
-                } else {
-                    System.out.println(String.format("ERROR: user %s not found", name));
+                case "unregister" -> {
+                    if (!doesUserKeyExist(registeredUsers, username)) {
+                        System.out.printf("ERROR: user %s not found\n", username);
+                    } else {
+                        registeredUsers.remove(username);
+                        System.out.printf("%s unregistered successfully\n", username);
+                    }
                 }
             }
         }
+        printResult(registeredUsers);
+    }
 
-        for (Map.Entry<String, String> entry : registered.entrySet()) {
-            System.out.println(String.format("%s => %s", entry.getKey(), entry.getValue()));
+    private static boolean doesUserKeyExist(HashMap<String, String> registeredUsers, String username) {
+        return registeredUsers.containsKey(username);
+    }
+
+    private static void printResult(HashMap<String, String> registeredUsers) {
+        for (Map.Entry<String, String> entrySet : registeredUsers.entrySet()) {
+            System.out.printf("%s => %s\n", entrySet.getKey(), entrySet.getValue());
         }
-
     }
 }
+
+
+
 
