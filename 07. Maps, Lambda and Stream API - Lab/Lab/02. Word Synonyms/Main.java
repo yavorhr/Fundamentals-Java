@@ -4,26 +4,32 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, List<String>> keysAndSynonyms = new TreeMap<>();
-        int pairsCount = Integer.parseInt(scanner.nextLine());
+        int n = Integer.parseInt(scanner.nextLine());
+        LinkedHashMap<String, List<String>> words = new LinkedHashMap<>();
 
-        for (int i = 0; i < pairsCount; i++) {
+        for (int i = 0; i < n; i++) {
             String key = scanner.nextLine();
             String synonym = scanner.nextLine();
 
-            if (keysAndSynonyms.containsKey(key)) {
-                List<String> stringList = keysAndSynonyms.get(key);
-                stringList.add(synonym);
-                keysAndSynonyms.put(key, stringList);
-            } else {
-                List<String> synonymsList = new ArrayList<>();
-                synonymsList.add(synonym);
-                keysAndSynonyms.put(key, synonymsList);
-
-            }
+            words.putIfAbsent(key, new ArrayList<>());
+            addSynonymToExistingKey(words, key, synonym);
         }
-        for (Map.Entry<String, List<String>> entry : keysAndSynonyms.entrySet()) {
-            System.out.printf("%s - %s%n", entry.getKey(), entry.getValue().toString().replaceAll("[\\]\\[]", ""));
+
+        printLinkedMap(words);
+    }
+
+    private static void addSynonymToExistingKey(LinkedHashMap<String, List<String>> hashMap, String key, String synonym) {
+        List<String> synonymsList = hashMap.get(key);
+        synonymsList.add(synonym);
+        hashMap.put(key, synonymsList);
+    }
+
+    private static void printLinkedMap(LinkedHashMap<String, List<String>> hashMap) {
+        for (Map.Entry<String, List<String>> entrySet : hashMap.entrySet()) {
+            System.out.printf("%s - %s\n",entrySet.getKey(), String.join(", ", entrySet.getValue()) );
         }
     }
 }
+
+
+
