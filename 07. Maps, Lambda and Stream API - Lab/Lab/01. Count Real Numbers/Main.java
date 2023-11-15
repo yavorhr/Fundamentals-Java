@@ -4,32 +4,29 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        double[] input = Arrays.stream(scanner.nextLine()
-                .split(" "))
-                .mapToDouble(Double::parseDouble)
-                .toArray();
+        int n = Integer.parseInt(scanner.nextLine());
+        LinkedHashMap<String, List<String>> words = new LinkedHashMap<>();
 
-        HashMap<Double, Integer> hashMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            String key = scanner.nextLine();
+            String synonym = scanner.nextLine();
 
-        for (double number : input) {
-
-            hashMap.putIfAbsent(number, 1);
-            addCountIfExistingKey(hashMap, number);
+            words.putIfAbsent(key, new ArrayList<>());
+            addSynonymToExistingKey(words, key, synonym);
         }
 
-        printResult(hashMap);
+        printLinkedMap(words);
     }
 
-    private static void addCountIfExistingKey(HashMap<Double, Integer> hashMap, double number) {
-        if (hashMap.containsKey(number)) {
-            int count = hashMap.get(number);
-            hashMap.put(number, count + 1);
-        }
+    private static void addSynonymToExistingKey(LinkedHashMap<String, List<String>> hashMap, String key, String synonym) {
+        List<String> synonymsList = hashMap.get(key);
+        synonymsList.add(synonym);
+        hashMap.put(key, synonymsList);
     }
 
-    private static void printResult(HashMap<Double, Integer> hashMap) {
-        for (Map.Entry<Double, Integer> entrySet : hashMap.entrySet()) {
-            System.out.printf("%.0f -> %d\n", entrySet.getKey(), entrySet.getValue());
+    private static void printLinkedMap(LinkedHashMap<String, List<String>> hashMap) {
+        for (Map.Entry<String, List<String>> entrySet : hashMap.entrySet()) {
+            System.out.printf("%s - %s\n",entrySet.getKey(), String.join(", ", entrySet.getValue()) );
         }
     }
 }
