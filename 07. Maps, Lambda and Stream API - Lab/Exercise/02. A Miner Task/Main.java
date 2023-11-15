@@ -4,25 +4,32 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, Integer> resources = new LinkedHashMap<>();
-        String input = scanner.nextLine();
+        HashMap<String, Integer> mapResourcesAndQuantities = new HashMap<>();
 
-        while (!"stop".equals(input)) {
-            String key = input;
+        String resource = scanner.nextLine();
+        while (!"stop".equals(resource)) {
             int quantity = Integer.parseInt(scanner.nextLine());
 
-            if (resources.containsKey(key)) {
-                Integer currentValue = resources.get(key);
-                resources.put(key, currentValue + quantity);
-            } else {
-                resources.put(key, quantity);
-            }
-            input = scanner.nextLine();
+            mapResourcesAndQuantities.putIfAbsent(resource, 0);
+
+            addQuantityToExistingResource(mapResourcesAndQuantities, resource, quantity);
+
+            resource = scanner.nextLine();
         }
 
-        for (Map.Entry<String, Integer> entry : resources.entrySet()) {
-            System.out.printf("%s -> %d%n", entry.getKey(), entry.getValue());
+        printResult(mapResourcesAndQuantities);
+    }
+
+    private static void printResult(HashMap<String, Integer> mapResourcesAndQuantities) {
+        for (Map.Entry<String, Integer> entrySet : mapResourcesAndQuantities.entrySet()) {
+            System.out.printf("%s - %d\n",entrySet.getKey(), entrySet.getValue() );
         }
     }
+
+    private static void addQuantityToExistingResource(HashMap<String, Integer> mapResourcesAndQuantities, String resource, int quantity) {
+        int currentQuantity = mapResourcesAndQuantities.get(resource) + quantity;
+        mapResourcesAndQuantities.put(resource, currentQuantity);
+    }
 }
+
 
