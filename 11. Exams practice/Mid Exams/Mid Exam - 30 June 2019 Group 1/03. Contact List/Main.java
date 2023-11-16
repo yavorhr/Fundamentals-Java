@@ -1,100 +1,83 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] text = scanner.nextLine().split("\\s+");
-        List<String> contactsList = new ArrayList<>();
-        contactsList.addAll(Arrays.asList(text));
+        List<String> contactsBook = Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .collect(Collectors.toList());
 
+        String input = scanner.nextLine();
 
         while (true) {
-            String input = scanner.nextLine();
             String[] tokens = input.split(" ");
             String command = tokens[0];
-            String name = tokens[1];
 
             if (command.equals("Print")) {
-                String printType = tokens[1];
-                if (printType.equals("Reversed")) {
-                    Collections.reverse(contactsList);
-                    System.out.print("Contacts: ");
-                    System.out.println(String.join(" ", contactsList));
-                    break;
-                } else if (printType.equals("Normal")) {
-                    System.out.print("Contacts: ");
-                    System.out.println(String.join(" ", contactsList));
+                String condition = tokens[1];
+
+                if (condition.equals("Normal")) {
+                    printContacts(contactsBook);
+                } else if (condition.equals("Reversed")) {
+                    Collections.reverse(contactsBook);
+                    printContacts(contactsBook);
                     break;
                 }
-            }
+            } else {
+                switch (command) {
+                    case "Add" -> {
+                        String contact = tokens[1];
+                        int index = Integer.parseInt(tokens[2]);
 
-            switch (command) {
-                case "Add":
-                    int index = Integer.parseInt(tokens[2]);
-                    if (!contactsList.contains(name)) {
-                        contactsList.add(name);
-                    } else if (contactsList.contains(name) && index >= 0 && index <= contactsList.size() - 1) {
-                        contactsList.add(index, name);
-                    }
-                    break;
-                case "Remove":
-                    int indexToRemove = Integer.parseInt(tokens[1]);
-                    if (indexToRemove >= 0 && indexToRemove <= contactsList.size() - 1) {
-                        contactsList.remove(indexToRemove);
-                    }
-                    break;
-                case "Export":
-                    int startIndex = Integer.parseInt(tokens[1]);
-                    int count = Integer.parseInt(tokens[2]);
-
-                    if (startIndex + count < contactsList.size()) {
-                        for (int i = startIndex; i < count + startIndex; i++) {
-                            System.out.print(contactsList.get(i) + " ");
+                        if (isContains(contactsBook, contact)) {
+                            contactsBook.add(index, contact);
+                        } else {
+                            contactsBook.add(contact);
                         }
+                    }
+                    case "Remove" -> {
+                        int index = Integer.parseInt(tokens[1]);
+                        if (isIndexValid(contactsBook, index)) {
+                            contactsBook.remove(index);
+                        }
+                    }
+                    case "Export" -> {
+                        int startIndex = Integer.parseInt(tokens[1]);
+                        int count = Integer.parseInt(tokens[2]);
+
+                        if (count > contactsBook.size()) {
+                            count = contactsBook.size();
+                        }
+
+                        printContactsByGivenLength(contactsBook, startIndex, count);
                         System.out.println();
-                        break;
-                    } else if (count > contactsList.size() - 1) {
-                        for (int i = startIndex; i < contactsList.size(); i++) {
-                            System.out.print(contactsList.get(i) + " ");
-                        }
                     }
-                    System.out.println();
-                    break;
+                }
             }
+            input = scanner.nextLine();
         }
+    }
 
+    private static void printContacts(List<String> contactsBook) {
+        System.out.println("Contacts: " + contactsBook.toString().replaceAll("[\\[\\]]", ""));
+    }
+
+    private static void printContactsByGivenLength(List<String> contactsBook, int startIndex, int count) {
+        for (int i = startIndex; i < count; i++) {
+            System.out.print(contactsBook.get(i) + " ");
+        }
+    }
+
+    private static boolean isIndexValid(List<String> contactsBook, int index) {
+        return index >= 0 && index < contactsBook.size();
+    }
+
+    private static boolean isContains(List<String> contactsBook, String contact) {
+        return contactsBook.contains(contact);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
