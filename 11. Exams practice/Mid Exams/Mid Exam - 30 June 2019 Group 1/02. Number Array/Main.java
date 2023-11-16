@@ -4,102 +4,59 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] numbersAsText = scanner.nextLine().split("\\s+");
-        int[] numbers = new int[numbersAsText.length];
-
-        for (int i = 0; i < numbersAsText.length; i++) {
-            numbers[i] = Integer.parseInt(numbersAsText[i]);
-        }
+        int[] numbers = Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
 
         String input = scanner.nextLine();
         while (!"End".equals(input)) {
-            String[] tokens = input.split("\\s+");
+            String[] tokens = input.split(" ");
             String command = tokens[0];
 
             switch (command) {
-                case "Switch":
+                case "Switch" -> {
                     int index = Integer.parseInt(tokens[1]);
-                    if (index >= 0 && index < numbers.length) {
-                        numbers[index] = numbers[index] * -1;
+
+                    if (isIndexValid(numbers,index)) {
+                        numbers[index] *= -1;
                     }
-                    break;
-                case "Change":
-                    index = Integer.parseInt(tokens[1]);
+                }
+                case "Change" -> {
+                    int index = Integer.parseInt(tokens[1]);
                     int value = Integer.parseInt(tokens[2]);
-                    if (index >= 0 && index < numbers.length) {
+
+                    if (isIndexValid(numbers,index)) {
                         numbers[index] = value;
                     }
-                    break;
-                case "Sum":
-                    String todo = tokens[1];
-                    switch (todo) {
-                        case "Negative":
-                            int sumNegative = 0;
-                            for (int i = 0; i < numbers.length; i++) {
-                                if (numbers[i] < 0) {
-                                    sumNegative += numbers[i];
-                                }
-                            }
-                            System.out.println(sumNegative);
-                            break;
-                        case "Positive":
-                            int sumPositive = 0;
-                            for (int i = 0; i < numbers.length; i++) {
-                                if (numbers[i] >= 0) {
-                                    sumPositive += numbers[i];
-                                }
-                            }
-                            System.out.println(sumPositive);
-                            break;
-                        case "All":
-                            int sumAll = 0;
-                            for (int i = 0; i < numbers.length; i++) {
-                                sumAll += numbers[i];
-                            }
-                            System.out.println(sumAll);
-                            break;
-                    }
-                    break;
+                }
+                case "Sum" -> {
+                    String condition = tokens[1];
+                    sumNumbersByCondition(numbers, condition);
+                }
             }
             input = scanner.nextLine();
         }
 
-        for (int i = 0; i < numbers.length; i++) {
-            if (numbers[i] >= 0) {
-                System.out.print(numbers[i] + " ");
-            }
-        }
+        printResult(numbers);
+    }
 
+    private static void printResult(int[] numbers) {
+        Arrays.stream(numbers).filter(n -> n >= 0).forEach(n -> System.out.print(n + " "));
+    }
+
+    private static void sumNumbersByCondition(int[] numbers, String condition) {
+        switch (condition) {
+            case "Negative" -> System.out.println(Arrays.stream(numbers).filter(n -> n < 0).sum());
+            case "Positive" -> System.out.println(Arrays.stream(numbers).filter(n -> n > 0).sum());
+            case "All" -> System.out.println(Arrays.stream(numbers).sum());
+        }
+    }
+
+    private static boolean isIndexValid(int[] array, int index) {
+        return index >= 0 && index < array.length;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
