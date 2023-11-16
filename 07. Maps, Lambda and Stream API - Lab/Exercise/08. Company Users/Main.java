@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, List<String>> companiesUsers = new LinkedHashMap<>();
+        HashMap<String, List<String>> registry = new HashMap<>();
 
         String input = scanner.nextLine();
         while (!"End".equals(input)) {
@@ -12,25 +12,35 @@ public class Main {
             String company = tokens[0];
             String id = tokens[1];
 
-            companiesUsers.putIfAbsent(company, new ArrayList<>());
-            List<String> list = companiesUsers.get(company);
-
-            if (!list.contains(id)) {
-                list.add(id);
-            }
+            registry.putIfAbsent(company, new ArrayList<>());
+            addIdToRegistry(registry, company, id);
 
             input = scanner.nextLine();
         }
+        printRegistry(registry);
+    }
 
-        companiesUsers
+    private static void printRegistry(HashMap<String, List<String>> registry) {
+        registry
                 .entrySet()
                 .stream()
                 .sorted((c1, c2) -> c1.getKey().compareTo(c2.getKey()))
-                .forEach(c -> {
-                    System.out.println(c.getKey());
-                    c.getValue().forEach(id -> System.out.println(String.format("-- %s", id)));
+                .forEach(entry -> {
+                    System.out.println(entry.getKey());
+
+                    entry.getValue().forEach(id -> System.out.println("-- " + id));
                 });
     }
+
+    private static void addIdToRegistry(HashMap<String, List<String>> registry, String company, String id) {
+        List<String> currentIds = registry.get(company);
+
+        if (!currentIds.contains(id)) {
+            currentIds.add(id);
+        }
+    }
 }
+
+
 
 
