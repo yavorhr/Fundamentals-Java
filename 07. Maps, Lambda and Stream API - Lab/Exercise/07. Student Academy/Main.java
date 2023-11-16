@@ -1,33 +1,50 @@
 import java.util.*;
+import java.util.stream.DoubleStream;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map <String, List <Double>> studentGrades = new LinkedHashMap<>();
+        int count = Integer.parseInt(scanner.nextLine());
 
-        int pairs = Integer.parseInt(scanner.nextLine());
-        for (int i = 0; i < pairs; i++) {
-            String student = scanner.nextLine();
-            double currentGrade = Double.parseDouble(scanner.nextLine());
+        HashMap<String, List<Double>> studentsGrades = new HashMap<>();
 
-            studentGrades.putIfAbsent(student,new ArrayList<>());
-            studentGrades.get(student).add(currentGrade);
+        for (int i = 0; i < count; i++) {
+            String studentName = scanner.nextLine();
+            double gradeInput = Double.parseDouble(scanner.nextLine());
+
+            studentsGrades.putIfAbsent(studentName, new ArrayList<>());
+
+            addGradeToStudent(studentsGrades, studentName, gradeInput);
         }
 
-        studentGrades
+        studentsGrades
                 .entrySet()
                 .stream()
-                .filter(s -> s.getValue().stream().mapToDouble(Double::doubleValue).average().getAsDouble() >=4.50)
-                .sorted ((s1,s2)->{
-                    double first = s1.getValue().stream().mapToDouble(Double::doubleValue).average().getAsDouble();
-                    double second = s2.getValue().stream().mapToDouble(Double::doubleValue).average().getAsDouble();
-                    return Double.compare(second,first);
+                .filter(entry -> {
+                    double average = getAverage(entry);
+                    return average >= 4.50;
                 })
-                .forEach(s -> System.out.println(String.format("%s -> %.2f",
-                        s.getKey(),
-                        s.getValue().stream().mapToDouble(Double::doubleValue).average().getAsDouble())));
+                .sorted((student1, student2) -> {
+                    double firstAvg = getAverage(student1);
+                    double secondAvg = getAverage(student2);
+                    return Double.compare(firstAvg, secondAvg);
+                })
+                .forEach(s ->
+                        System.out.printf("%s -> %.2f\n", s.getKey(), getAverage(s)));
+    }
+
+    private static void addGradeToStudent(HashMap<String, List<Double>> studentsGrades, String studentName, double gradeInput) {
+        List<Double> currentGrades = studentsGrades.get(studentName);
+        currentGrades.add(gradeInput);
+        studentsGrades.put(studentName, currentGrades);
+    }
+
+    private static double getAverage(Map.Entry<String, List<Double>> entry) {
+        return entry.getValue().stream().mapToDouble(Double::doubleValue).average().getAsDouble();
     }
 }
+
+
 
 
