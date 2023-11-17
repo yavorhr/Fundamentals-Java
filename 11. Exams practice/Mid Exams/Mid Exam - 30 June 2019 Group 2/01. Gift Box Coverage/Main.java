@@ -4,48 +4,40 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        double sizeSide = Double.parseDouble(scanner.nextLine());
-        int sheets = Integer.parseInt(scanner.nextLine());
-        double areaPerSheet = Double.parseDouble(scanner.nextLine());
+        double sizeSideInCm = Double.parseDouble(scanner.nextLine());
+        int numberOfSheets = Integer.parseInt(scanner.nextLine());
+        double areaOfSingleSheet = Double.parseDouble(scanner.nextLine());
+        int totalSides = 6;
 
-        double boxArea = sizeSide * sizeSide * 6;
-        double sheetsArea = 0;
+        double giftArea = sizeSideInCm * sizeSideInCm * totalSides;
 
-        for (int i = 1; i <= sheets; i++) {
-            double currentArea = areaPerSheet;
+        double coveredArea = 0.0;
+        coveredArea = calcArea(numberOfSheets, areaOfSingleSheet, coveredArea);
 
+        double coveredPercents = calcCoveredAreaInPercents(giftArea, coveredArea);
+
+        printResult(coveredPercents);
+    }
+
+    private static void printResult(double coveredPercents) {
+        System.out.printf("You can cover %.2f%% of the box.", coveredPercents);
+    }
+
+    private static double calcCoveredAreaInPercents(double giftArea, double coveredArea) {
+        return coveredArea / giftArea * 100;
+    }
+
+    private static double calcArea(int numberOfSheets, double areaOfSingleSheet, double coveredArea) {
+        for (int i = 1; i <= numberOfSheets; i++) {
+            double currentArea = areaOfSingleSheet;
             if (i % 3 == 0) {
                 currentArea *= 0.25;
             }
-            sheetsArea += currentArea;
+            coveredArea += currentArea;
         }
-        double percent = (sheetsArea / boxArea) * 100;
-
-        System.out.printf("You can cover %.2f%% of the box.", percent);
+        return coveredArea;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
