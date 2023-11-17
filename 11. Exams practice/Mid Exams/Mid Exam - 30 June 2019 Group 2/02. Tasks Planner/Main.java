@@ -1,113 +1,77 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] line = scanner.nextLine().split(" ");
-        int[] hours = new int[line.length];
-
-        for (int i = 0; i < hours.length; i++) {
-            hours[i] = Integer.parseInt(line[i]);
-        }
-
-        int droppedCnt = 0;
-        int incompleteCnt = 0;
-        int completedCnt = 0;
+        List<Integer> tasks = Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
 
         String input = scanner.nextLine();
         while (!"End".equals(input)) {
             String[] tokens = input.split(" ");
-
             String command = tokens[0];
 
             switch (command) {
-                case "Complete":
-                    // "Complete {index}"
+                case "Complete" -> {
                     int index = Integer.parseInt(tokens[1]);
-                    if (index >= 0 && index < hours.length) {
-                        hours[index] = 0;
+
+                    if (isIndexValid(index, tasks)) {
+                        tasks.set(index, 0);
                     }
-                    break;
-                case "Change":
-                    //"Change {index} {time}"
-                    index = Integer.parseInt(tokens[1]);
+                }
+                case "Change" -> {
+                    int index = Integer.parseInt(tokens[1]);
                     int time = Integer.parseInt(tokens[2]);
-                    if (index >= 0 && index < hours.length) {
-                        hours[index] = time;
+
+                    if (isIndexValid(index, tasks)) {
+                        tasks.set(index, time);
                     }
-                    break;
-                case "Drop":
-                    //•    "Drop {index}"
-                    index = Integer.parseInt(tokens[1]);
-                    if (index >= 0 && index < hours.length) {
-                        hours[index] = -1;
+                }
+                case "Drop" -> {
+                    int index = Integer.parseInt(tokens[1]);
+
+                    if (isIndexValid(index, tasks)) {
+                        tasks.set(index, -1);
                     }
-                    break;
-                case "Count":
-                    String todo = tokens[1];
-                    if ("Dropped".equals(todo)) {
-                        for (int i = 0; i < hours.length; i++) {
-                            //Count Dropped"
-                            if (hours[i] == -1) {
-                                droppedCnt++;
-                            }
-                        }
-                        System.out.println(droppedCnt);
-                    } else if ("Completed".equals(todo)) {
-                        // "Count Completed" - o  Print the number of completed tasks.
-                        for (int i = 0; i < hours.length; i++) {
-                            if (hours[i] == 0) {
-                                completedCnt++;
-                            }
-                        }
-                        System.out.println(completedCnt);
-                    } else if ("Incomplete".equals(todo)) {
-                        // "Count Incomplete" - Print the number of incomplete tasks (this doesn’t include the dropped tasks.
-                        for (int i = 0; i < hours.length; i++) {
-                            if (hours[i] > 0) {
-                                incompleteCnt++;
-                            }
-                        }
-                        System.out.println(incompleteCnt);
-                    }
-                    break;
+                }
+                case "Count" -> {
+                    String condition = tokens[1];
+                    printTasksPerCondition(condition, tasks);
+                }
             }
             input = scanner.nextLine();
         }
+        printAllIncompleteTasks(tasks);
+    }
 
-        for (int i = 0; i < hours.length; i++) {
-            if (hours[i] > 0) {
-                System.out.print(hours[i] + " ");
+    private static boolean isIndexValid(int index, List<Integer> tasks) {
+        return index >= 0 && index < tasks.size();
+    }
+
+    private static void printAllIncompleteTasks(List<Integer> tasks) {
+        tasks.stream().filter(t -> t > 0).forEach(t -> System.out.print(t + " "));
+    }
+
+    private static void printTasksPerCondition(String condition, List<Integer> tasks) {
+        switch (condition) {
+            case "Completed" -> {
+                System.out.println(tasks.stream().filter(t -> t == 0).count());
+            }
+            case "Incomplete" -> {
+                System.out.println(tasks.stream().filter(t -> t > 0).count());
+            }
+            case "Dropped" -> {
+                System.out.println(tasks.stream().filter(t -> t < 0).count());
             }
         }
 
+
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
