@@ -1,13 +1,14 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] itemsText = scanner.nextLine().split("\\|");
-        List<String> items = new ArrayList<>();
-        items.addAll(Arrays.asList(itemsText));
-        List<String> stolen = new ArrayList<>();
+        List<String> items =
+                Arrays.stream(scanner.nextLine()
+                        .split("\\|"))
+                        .collect(Collectors.toList());
 
         String input = scanner.nextLine();
         while (!"Yohoho!".equals(input)) {
@@ -15,70 +16,63 @@ public class Main {
             String command = tokens[0];
 
             switch (command) {
-                case "Loot":
-                    String[] loot = tokens[1].split(" ");
-                    for (int i = 0; i < loot.length; i++) {
-                        if (!items.contains(loot[i])) {
-                            items.add(0, loot[i]);
-                        }
-                    }
-                    break;
-                case "Drop":
+                case "Drop" -> {
                     int index = Integer.parseInt(tokens[1]);
-                    if (index >= 0 && index < items.size()) {
-                        items.add(items.remove(index));
+                    if (isIndexValid(items, index)) {
+                        String removedItem = items.remove(index);
+                        items.add(removedItem);
                     }
-                    break;
-                case "Steal":
+                }
+                case "Loot" -> {
+                    addItemsIfNotAddedToList(items, tokens[1]);
+                }
+                case "Steal" -> {
                     int count = Integer.parseInt(tokens[1]);
-                    while (stolen.size() < count && !items.isEmpty()) {
-                        int lastIndex = items.size() - 1;
-                        stolen.add(items.get(lastIndex));
-                        items.remove(lastIndex);
-                    }
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown command");
+                    int startIndex = items.size() - count;
+
+                    removeItemsFromStartIndex(items, startIndex);
+                }
             }
             input = scanner.nextLine();
         }
 
-        int count = 0;
-        double totalLength = 0;
-        for (int i = 0; i < items.size(); i++) {
-            int length = items.get(i).length();
-            totalLength += length;
-            count++;
-        }
+        int sumOfItemsLength = items.stream()
+                .mapToInt(String::length)
+                .sum();
 
-        Collections.reverse(stolen);
-        System.out.println(String.join(", ", stolen));
+        double averageGain = sumOfItemsLength * 1.0 / items.size();
 
-        if (items.isEmpty()) {
+        printResult(items, averageGain);
+    }
+
+    private static void printResult(List<String> items, double averageGain) {
+        if (items.size() == 0) {
             System.out.println("Failed treasure hunt.");
         } else {
-            System.out.printf("Average treasure gain: %.2f pirate credits.%n", totalLength / count);
+            System.out.printf("Average treasure gain: %.2f pirate credits.", averageGain);
         }
     }
+
+    private static void addItemsIfNotAddedToList(List<String> items, String tokens) {
+        String[] newItems = tokens.split(" ");
+
+        for (String newItem : newItems) {
+            if (!items.contains(newItem)) {
+                items.add(0, newItem);
+            }
+        }
+    }
+
+    private static void removeItemsFromStartIndex(List<String> items, int startIndex) {
+        List<String> itemsToRemove = items.subList(startIndex, items.size());
+        System.out.println(String.join(", ", itemsToRemove));
+        itemsToRemove.clear();
+    }
+
+    private static boolean isIndexValid(List<String> items, int index) {
+        return index >= 0 && index < items.size();
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
