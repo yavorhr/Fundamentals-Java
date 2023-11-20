@@ -4,20 +4,9 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] pirateShipText = scanner.nextLine().split("\\>");  //pirateShip - ние
-        String[] warShipText = scanner.nextLine().split("\\>");     //warShip
-        int maxHealthCapacityPerSection = Integer.parseInt(scanner.nextLine());
-        boolean stalemate = true;
-
-        int[] pirateShip = new int[pirateShipText.length];
-        int[] warShip = new int[warShipText.length];
-
-        for (int i = 0; i < pirateShip.length; i++) {
-            pirateShip[i] = Integer.parseInt(pirateShipText[i]);
-        }
-        for (int i = 0; i < warShip.length; i++) {
-            warShip[i] = Integer.parseInt(warShipText[i]);
-        }
+        int[] pirateShip = readArray(scanner);
+        int[] warship = readArray(scanner);
+        int maximumHealthCapacity = Integer.parseInt(scanner.nextLine());
 
         String input = scanner.nextLine();
         while (!"Retire".equals(input)) {
@@ -25,102 +14,87 @@ public class Main {
             String command = tokens[0];
 
             switch (command) {
-                case "Fire":
-                    //•    Fire {index} {damage}
-                    int sectionWarShip = Integer.parseInt(tokens[1]);
-                    int damagePirateShip = Integer.parseInt(tokens[2]);
+                case "Fire" -> {
+                    int index = getInt(1, tokens);
+                    int damage = getInt(2, tokens);
 
-                    if (sectionWarShip >= 0 && sectionWarShip <= warShip.length - 1) {
-                        warShip[sectionWarShip] -= damagePirateShip;
-                        if (warShip[sectionWarShip] < 0) {
-                            System.out.println("You won! The enemy ship has sunken.");
-                            stalemate = false;
-                            break;
+                    if (indexIsValid(warship, index)) {
+                        warship[index] -= damage;
+
+                        if (checkHealth(warship[index])) {
+                            printMessage("You won! The enemy ship has sunken.");
+                            return;
                         }
                     }
-                    break;
-                case "Defend":
-                    //•    Defend {startIndex} {endIndex} {damage}
-                    int startSectionPirateShip = Integer.parseInt(tokens[1]);
-                    int endSectionPirateShip = Integer.parseInt(tokens[2]);
-                    int damageWarShip = Integer.parseInt(tokens[3]);
+                }
+                case "Repair" -> {
+                    int index = getInt(1, tokens);
+                    int health = getInt(2, tokens);
 
-                    if (startSectionPirateShip >= 0 && endSectionPirateShip <= pirateShip.length - 1) {
-                        for (int i = 0; i <= endSectionPirateShip; i++) {
-                            pirateShip[i] -= damageWarShip;
-                            if (pirateShip[i] < 0) {
-                                System.out.println("You lost! The pirate ship has sunken.");
-                                stalemate = false;
-                                break;
+                    if (indexIsValid(pirateShip, index)) {
+                        pirateShip[index] += health;
+
+                        if (pirateShip[index] > maximumHealthCapacity) {
+                            pirateShip[index] = maximumHealthCapacity;
+                        }
+                    }
+                }
+                case "Defend" -> {
+                    int startIndex = getInt(1, tokens);
+                    int endIndex = getInt(2, tokens);
+                    int damage = getInt(3, tokens);
+
+                    if (indexIsValid(pirateShip, startIndex) && indexIsValid(pirateShip, endIndex)) {
+                        for (int i = startIndex; i <= endIndex; i++) {
+                            pirateShip[i] -= damage;
+
+                            if (checkHealth(pirateShip[i])) {
+                                printMessage("You lost! The pirate ship has sunken.");
+                                return;
                             }
                         }
                     }
-                    break;
-                case "Repair":
-                    //•    Repair {index} {health}
-                    int sctnRepairPrtShp = Integer.parseInt(tokens[1]);
-                    int addHealthPrtShipSctn = Integer.parseInt(tokens[2]);
 
-                    if (sctnRepairPrtShp >= 0 && sctnRepairPrtShp <= pirateShip.length - 1) {
-                        pirateShip[sctnRepairPrtShp] += addHealthPrtShipSctn;
-                        if (pirateShip[sctnRepairPrtShp] > maxHealthCapacityPerSection) {
-                            pirateShip[sctnRepairPrtShp] = maxHealthCapacityPerSection;
-                        }
-                    }
-                    break;
-                case "Status":
-                    //•    Status
-                    double minimumHealthAllowed = 0.2 * maxHealthCapacityPerSection;
-                    int counter = 0;
-                    for (int i = 0; i <= pirateShip.length - 1; i++) {
-                        if (pirateShip[i] < minimumHealthAllowed) {
-                            counter++;
-                        }
-                    }
-                    System.out.printf("%d sections need repair.%n", counter);
-                    break;
+                }
+                case "Status" -> {
+                    long count = Arrays.stream(pirateShip)
+                            .filter(s -> s < maximumHealthCapacity * 0.2)
+                            .count();
+                    System.out.printf("%d sections need repair.\n", count);
+                }
             }
             input = scanner.nextLine();
         }
 
-        int sumPirateShipSections = 0;
-        int sumWarShipSections = 0;
-        if (stalemate) {
+        if (pirateShip.length > 0 && warship.length > 0) {
+            int pirateShipTotalHealth = Arrays.stream(pirateShip).sum();
+            int warshipTotalHealth = Arrays.stream(warship).sum();
 
-            for (int i = 0; i <= pirateShip.length - 1; i++) {
-                sumPirateShipSections = sumPirateShipSections + pirateShip[i];
-            }
-
-            for (int i = 0; i <= warShip.length - 1; i++) {
-                sumWarShipSections = sumWarShipSections + warShip[i];
-            }
-        }
-        if (stalemate) {
-            System.out.println("Pirate ship status: " + sumPirateShipSections);
-            System.out.println("Warship status: " + sumWarShipSections);
+            String result = String.format("Pirate ship status: %d\nWarship status: %d\n", pirateShipTotalHealth, warshipTotalHealth);
+            System.out.println(result);
         }
     }
+
+    private static int getInt(int i, String[] tokens) {
+        return Integer.parseInt(tokens[i]);
+    }
+
+    private static int[] readArray(Scanner scanner) {
+        return Arrays.stream(scanner.nextLine().split(">")).mapToInt(Integer::valueOf).toArray();
+    }
+
+    private static boolean checkHealth(int health) {
+        return health <= 0;
+    }
+
+    private static boolean indexIsValid(int[] warship, int index) {
+        return index >= 0 && index < warship.length;
+    }
+
+    private static void printMessage(String message) {
+        System.out.println(message);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
