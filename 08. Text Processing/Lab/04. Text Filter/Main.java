@@ -1,26 +1,36 @@
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] banWords = scanner.nextLine().split(", ");
+        String[] bannedWords = scanner.nextLine().split(", ");
         String text = scanner.nextLine();
 
-        for (String banWord : banWords) {
-            if (text.contains(banWord)) {
-                String replacement = repeatStr("*", banWord.length());
-                text = text.replace(banWord, replacement);
-            }
+        for (String bannedWord : bannedWords) {
+            text = filterText(text, bannedWord);
         }
+
+        printString(text);
+    }
+
+    private static void printString(String text) {
         System.out.println(text);
     }
 
-    private static String repeatStr(String str, int length) {
-        String replacement = "";
-        for (int i = 0; i < length; i++) {
-            replacement += str;
+    private static String filterText(String text, String bannedWord) {
+        int index = text.indexOf(bannedWord);
+
+        while (index != -1) {
+            String replacement = repeatString("*", bannedWord.length());
+            text = text.replace(bannedWord, replacement);
+
+            index = text.indexOf(bannedWord);
         }
-        return replacement;
+        return text;
+    }
+
+    private static String repeatString(String s, int length) {
+        return "*".repeat(Math.max(0, length));
     }
 }
