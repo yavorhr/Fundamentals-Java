@@ -1,16 +1,20 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] words = scanner.nextLine().split(" ");
+        String[] input = scanner.nextLine().split(" ");
+        StringBuilder resultString = new StringBuilder();
 
-        for (int i = 0; i < words.length; i++) {
-            for (int j = 0; j < words[i].length(); j++) {
-                System.out.print(words[i]);
-            }
-        }
 
+        Arrays.stream(input).forEach(s -> repeatString(s, s.length(), resultString));
+
+        System.out.println(resultString);
+    }
+
+    private static void repeatString(String currentString, int length, StringBuilder resultString) {
+        resultString.append(String.valueOf(currentString).repeat(Math.max(0, length)));
     }
 }
