@@ -1,22 +1,26 @@
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String text = scanner.nextLine();
-        cipher(text);
+        String input = scanner.nextLine();
+        StringBuilder cipheredInput = getCipherInput(input);
+        printCipher(cipheredInput);
     }
 
-    private static void cipher(String text) {
+    private static void printCipher(StringBuilder cipheredInput) {
+        System.out.println(cipheredInput);
+    }
 
-        StringBuilder result = new StringBuilder(text.length());
+    private static StringBuilder getCipherInput(String input) {
+        StringBuilder cipheredInput = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char currentChar = input.charAt(i);
+            currentChar += 3;
 
-        for (int i = 0; i < text.length(); i++) {
-            char currentChar = text.charAt(i);
-            result.append((char)(currentChar+3));
+            cipheredInput.append(currentChar);
         }
-        System.out.println(result);
+        return cipheredInput;
     }
 }
-
