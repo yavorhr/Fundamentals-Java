@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -7,12 +7,14 @@ public class Main {
         String[] textAndNumb = scanner.nextLine().split("\\s+");
 
         double sum = 0.0;
-        for (String sequance : textAndNumb) {
-            char firstLetter = sequance.charAt(0);
-            char lastLetter = sequance.charAt(sequance.length() - 1);
-            String numberAsString = sequance.substring(1, sequance.length() - 1);
-            long number = Integer.parseInt(numberAsString);
-            double result = 0.0;
+        for (String string : textAndNumb) {
+            char firstLetter = string.charAt(0);
+            char lastLetter = string.charAt(string.length() - 1);
+
+            String numberAsString = string.substring(1, string.length() - 1);
+            int number = Integer.parseInt(numberAsString);
+
+            double result ;
 
             if (Character.isUpperCase(firstLetter)) {
                 result = number * 1.0 / (firstLetter - 64);
@@ -29,9 +31,10 @@ public class Main {
             sum += result;
         }
 
+        printResult(sum);
+    }
+
+    private static void printResult(double sum) {
         System.out.println(String.format("%.2f", sum));
     }
 }
-
-
-
