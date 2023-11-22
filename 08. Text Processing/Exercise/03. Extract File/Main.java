@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -6,14 +6,17 @@ public class Main {
 
         String path = scanner.nextLine();
 
-        int lastSlash = path.lastIndexOf('\\');
-        int lastDot = path.lastIndexOf('.');
+        int lastSlashIndex = path.lastIndexOf('\\');
+        int dotIndex = path.indexOf('.');
 
-        String fileName = path.substring(lastSlash + 1, lastDot);
-        String extension = path.substring(lastDot + 1);
+        String fileName = path.substring(lastSlashIndex + 1, dotIndex);
+        String extension = path.substring(dotIndex + 1);
 
-        System.out.println(String.format("File name: %s", fileName));
-        System.out.println(String.format("File extension: %s", extension));
+        printResult(fileName, extension);
+    }
+
+    private static void printResult(String fileName, String extension) {
+        String result = String.format("File name: %s\nFile extension: %s", fileName, extension);
+        System.out.println(result);
     }
 }
-
