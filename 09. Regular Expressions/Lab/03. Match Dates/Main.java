@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,23 +6,36 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        Pattern pattern = Pattern.compile(">>(?<product>[A-Za-z]*)<<(?<price>\\d+.?\\d+)!(?<quantity>\\d+)");
+
+        Map<String, Double> products = new HashMap<>();
+        double sum = 0.0;
+
         String input = scanner.nextLine();
+        while (!"Purchase".equals(input)) {
+            Matcher matcher = pattern.matcher(input);
 
-        Pattern regex = Pattern.compile("\\b(?<day>\\d{2})([\\/.-])(?<month>[A-z][a-z]{2})\\2(?<year>\\d{4})\\b");
-        Matcher matcher = regex.matcher(input);
+            if (matcher.find()) {
+                String product = matcher.group("product");
+                double price = Double.parseDouble(matcher.group("price"));
+                int quantity = Integer.parseInt(matcher.group("quantity"));
 
-        printResult(matcher);
-    }
+                products.put(product, price);
+            }
 
-    private static void printResult(Matcher matcher) {
-        while (matcher.find()) {
-            String day = matcher.group("day");
-            String month = matcher.group("month");
-            String year = matcher.group("year");
 
-            System.out.printf("Day: %s, Month: %s, Year: %s%n",day,month,year);
+            input = scanner.nextLine();
         }
+
+        System.out.println("Bought furniture:");
+        products.keySet().forEach(System.out::println);
+
+        double sum = products
+                .values()
+                .stream()
+                .mapToDouble(Double::doubleValue)
+                .sum();
+
+        System.out.printf("Total money spend: %.2f", sum);
     }
-
-
 }
