@@ -6,36 +6,32 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String regex = ">>(?<product>[A-Za-z]*)<<(?<price>\\d+\\.?\\d+)!(?<quantity>\\d+)";
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = Pattern.compile(">>(?<product>[A-Za-z]*)<<(?<price>\\d+.?\\d+)!(?<quantity>\\d+)");
 
-        double sum = 0;
-        List<String> purchaseItems = new LinkedList<>();
+        List<String> products = new ArrayList<>();
+
+        double sum = 0.0;
 
         String input = scanner.nextLine();
         while (!"Purchase".equals(input)) {
             Matcher matcher = pattern.matcher(input);
 
             if (matcher.find()) {
-                String furniture = matcher.group("product");
-                purchaseItems.add(furniture);
-                int quantity = Integer.parseInt(matcher.group("quantity"));
+                String currentProduct = matcher.group("product");
                 double price = Double.parseDouble(matcher.group("price"));
-
-                double currentSum = quantity*price;
-                sum += currentSum;
+                int quantity = Integer.parseInt(matcher.group("quantity"));
+                sum += price * quantity;
+                products.add(currentProduct);
             }
-
             input = scanner.nextLine();
         }
 
-        System.out.println("Bought furniture: ");
+        printResult(products, sum);
+    }
 
-        for (String purchaseItem : purchaseItems) {
-            System.out.println(purchaseItem);
-        }
-
-        System.out.println(String.format("Total money spend: %.2f", sum));
+    private static void printResult(List<String> products, double sum) {
+        System.out.println("Bought furniture:");
+        products.forEach(System.out::println);
+        System.out.printf("Total money spend: %.2f", sum);
     }
 }
-
