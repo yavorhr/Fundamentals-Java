@@ -6,31 +6,31 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String regex = "%(?<name>[A-Z][a-z]+)%[^|%%.]*<(?<product>\\w+)>[^|%%.]*\\|(?<count>\\d+)\\|[^|%%.]*?(?<price>\\d+\\.?\\d+)\\$";
+        String regex = "%(?<name>[A-Z][a-z]+)%[^|%%.]*<(?<product>\\w+)>[^|%%.]*\\|(?<quantity>\\d+)\\|[^|%%.]*?(?<price>\\d+\\.?\\d+)\\$";
         Pattern pattern = Pattern.compile(regex);
 
-        double totalPrice=0;
+        double sum = 0;
+
         String input = scanner.nextLine();
         while (!"end of shift".equals(input)) {
             Matcher matcher = pattern.matcher(input);
 
-            if (matcher.find()) {
+            while (matcher.find()) {
                 String name = matcher.group("name");
                 String product = matcher.group("product");
-                int count = Integer.parseInt(matcher.group("count"));
+                int quantity = Integer.parseInt(matcher.group("quantity"));
                 double price = Double.parseDouble(matcher.group("price"));
+                double total = price * quantity;
 
-                double currentPrice = count * price;
-                totalPrice += currentPrice;
-                System.out.println(String.format("%s: %s - %.2f",name,product,currentPrice));
+                System.out.printf("%s: %s - %.2f\n", name, product, total);
+                sum += total;
             }
-
             input = scanner.nextLine();
         }
+        printTotalSum(sum);
+    }
 
-        System.out.println(String.format("Total income: %.2f",totalPrice));
+    private static void printTotalSum(double sum) {
+        System.out.printf("Total income: %.2f", sum);
     }
 }
-
-
-
