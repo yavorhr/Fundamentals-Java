@@ -1,62 +1,65 @@
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] input = scanner.nextLine().split(", ");
-        List<String> participants = new ArrayList<>();
+        List<String> racersList = Arrays.stream(scanner.nextLine().split(", ")).collect(Collectors.toList());
+        Map<String, Integer> racersMap = new HashMap<>();
 
-        for (String name : input) {
-            participants.add(name);
-        }
+        String regexForAlphabets = "[A-Za-z]+";
+        String regexForDigits = "\\d";
 
-        Map<String, Integer> finalists = new LinkedHashMap<>();
-        String letterRegex = "[A-Za-z]+";
-        String digixRegex = "\\d";
+        String input = scanner.nextLine();
+        while (!"end of race".equals(input)) {
 
-        Pattern letterPattern = Pattern.compile(letterRegex);
-        Pattern digitPattern = Pattern.compile(digixRegex);
+            Pattern alphabetsPattern = Pattern.compile(regexForAlphabets);
+            Pattern digitsPattern = Pattern.compile(regexForDigits);
 
-        String racers = scanner.nextLine();
-        while (!"end of race".equals(racers)) {
-            Matcher letterMatcher = letterPattern.matcher(racers);
-            StringBuilder sb = new StringBuilder();
+            Matcher matcher = alphabetsPattern.matcher(input);
 
-            while (letterMatcher.find()) {
-                sb.append(letterMatcher.group());
-            }
+            StringBuilder racerSb = getName(matcher);
+            String currentRacer = racerSb.toString();
 
-            if (participants.contains(sb.toString())) {
-                finalists.putIfAbsent(sb.toString(), 0);
-                int km = finalists.get(sb.toString());
+            if (racersList.contains(currentRacer)) {
+                racersMap.putIfAbsent(currentRacer, 0);
 
-                Matcher digitMatcher = digitPattern.matcher(racers);
+                Matcher matchDigits = digitsPattern.matcher(input);
 
-                while (digitMatcher.find()) {
-                    km += Integer.parseInt(digitMatcher.group());
+                int km = racersMap.get(currentRacer);
+                while (matchDigits.find()) {
+                    km += Integer.parseInt(matchDigits.group());
                 }
 
-                finalists.put(sb.toString(), km);
+                racersMap.put(currentRacer, km);
             }
-            racers = scanner.nextLine();
+            input = scanner.nextLine();
         }
+        printResult(racersMap);
+    }
 
-        List<String> output = new ArrayList<>();
-        output.add("1st place: ");
-        output.add("2nd place: ");
-        output.add("3rd place: ");
+    private static void printResult(Map<String, Integer> racersMap) {
+        List<String> positions = new ArrayList<>();
+        positions.add("1st place: ");
+        positions.add("2nd place: ");
+        positions.add("3rd place: ");
 
-        finalists
+        racersMap
                 .entrySet()
                 .stream()
-                .sorted((f1, f2) -> f2.getValue().compareTo(f1.getValue()))
+                .sorted((l, r) -> r.getValue().compareTo(l.getValue()))
                 .limit(3)
-                .forEach(f -> {
-                    System.out.println(output.remove(0) + f.getKey());
-                });
+                .forEach( e -> System.out.println(positions.remove(0) + e.getKey()));
+    }
+
+    private static StringBuilder getName(Matcher matcher) {
+        StringBuilder currentRacer = new StringBuilder();
+        while (matcher.find()) {
+            currentRacer.append(matcher.group());
+        }
+        return currentRacer;
     }
 }
-
