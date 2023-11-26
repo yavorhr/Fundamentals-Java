@@ -1,66 +1,69 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] booksText = scanner.nextLine().split("&");
-        List<String> booksShelf = new ArrayList<>();
-        booksShelf.addAll(Arrays.asList(booksText));
+        List<String> books = Arrays.stream(scanner.nextLine().split("&")).collect(Collectors.toList());
 
         String input = scanner.nextLine();
         while (!"Done".equals(input)) {
             String[] tokens = input.split(" \\| ");
             String command = tokens[0];
-            String bookName = tokens[1];
-            switch (command) {
-                case "Add Book":
-                    if (!booksShelf.contains(bookName)) {
-                        booksShelf.add(0, bookName);
-                    }
-                    break;
-                case "Take Book":
-                    if (booksShelf.contains(bookName)) {
-                        booksShelf.remove(bookName);
-                    }
-                    break;
-                case "Swap Books":
-                    String otherBook = tokens[2];
-                    if (booksShelf.contains(bookName) && booksShelf.contains(otherBook)) {
-                        Collections.swap(booksShelf, booksShelf.indexOf(bookName), booksShelf.indexOf(otherBook));
-                    }
-                    break;
-                case "Insert Book":
-                    booksShelf.add(bookName);
-                    break;
-                case "Check Book":
-                    int index = Integer.parseInt(tokens[1]);
-                    if (index >= 0 && index < booksShelf.size()) {
-                        System.out.println(booksShelf.get(index));
-                    }
-                    break;
-            }
 
+            switch (command) {
+                case "Add Book" -> {
+                    String book = tokens[1];
+                    if (!doesBookExist(books, book)) {
+                        books.add(0, book);
+                    }
+                }
+                case "Take Book" -> {
+                    String book = tokens[1];
+                    books.remove(book);
+                }
+                case "Swap Books" -> {
+                    String firstBook = tokens[1];
+                    String secondBook = tokens[2];
+
+                    swapBooks(books, firstBook, secondBook);
+                }
+                case "Insert Book" -> {
+                    String book = tokens[1];
+                    if (!doesBookExist(books, book)) {
+                        books.add(book);
+                    }
+                }
+                case "Check Book" -> {
+                    int index = Integer.parseInt(tokens[1]);
+                    if (isIndexValid(books, index)) {
+                        System.out.println(books.get(index));
+                    }
+                }
+            }
             input = scanner.nextLine();
         }
 
-        System.out.println(String.join(", ",booksShelf));
+        printResult(books);
+    }
+
+    private static void printResult(List<String> books) {
+        System.out.println(String.join(", ", books));
+    }
+
+    private static boolean isIndexValid(List<String> books, int index) {
+        return index >= 0 && index < books.size();
+    }
+
+    private static boolean doesBookExist(List<String> books, String book) {
+        return books.contains(book);
+    }
+
+    private static void swapBooks(List<String> books, String firstBook, String secondBook) {
+        int firstIndex = books.indexOf(firstBook);
+        int secondIndex = books.indexOf(secondBook);
+
+        Collections.swap(books,firstIndex,secondIndex);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
