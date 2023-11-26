@@ -5,39 +5,35 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         int energy = Integer.parseInt(scanner.nextLine());
-        int counter = 0;
-        boolean noEnergyLeft = false;
+        String input = scanner.nextLine();
+        boolean win = true;
 
-        String command = scanner.nextLine();
-        while (!"End of battle".equals(command)) {
-            int distance = Integer.parseInt(command);
+        int frags = 0;
 
-            if (energy - distance >= 0) {
-                energy = energy - distance;
-                counter++;
+        while (!"End of battle".equals(input)) {
+            int reach = Integer.parseInt(input);
 
-                if (counter % 3 == 0) {
-                    energy += counter;
-                }
-
-            } else {
-                noEnergyLeft = true;
-                break;
+            if (frags % 3 == 0) {
+                energy += frags;
             }
-            command = scanner.nextLine();
+
+            if (reach <= energy) {
+                energy -= reach;
+                frags++;
+            } else {
+                printOutput(energy, frags, "Not enough energy! Game ends with %d won battles and %d energy\n");
+                win = false;
+            }
+
+            input = scanner.nextLine();
         }
 
-        if (noEnergyLeft) {
-            System.out.printf("Not enough energy! Game ends with %d won battles and %d energy", counter, energy);
-        } else {
-            System.out.printf("Won battles: %d. Energy left: %d", counter, energy);
+        if (win){
+            printOutput(energy, frags, "Won battles: %d. Energy left: %d");
         }
     }
+
+    private static void printOutput(int energy, int frags, String s) {
+        System.out.printf(s, frags, energy);
+    }
 }
-
-
-
-
-
-
-
