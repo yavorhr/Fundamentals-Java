@@ -35,8 +35,7 @@ public class Main {
                     int lengthRight = Integer.parseInt(tokens[2]);
 
                     if (isIndexValid(targets, startIndexRight)) {
-                        int targetIndex = startIndexRight + lengthRight;
-                        targetIndex = getIndexToTheRight(targets, targetIndex);
+                        int targetIndex = getIndexToTheRight(targets, startIndexRight, lengthRight);
                         sumPoints = addTargetPoints(targets, sumPoints, targetIndex);
                     }
                 }
@@ -54,7 +53,8 @@ public class Main {
         System.out.printf("Iskren finished the archery tournament with %d points!", sumPoints);
     }
 
-    private static int getIndexToTheRight(int[] targets, int targetIndex) {
+    private static int getIndexToTheRight(int[] targets, int startIndexRight, int lengthRight) {
+        int targetIndex = startIndexRight + lengthRight;
         while (targetIndex >= targets.length) {
             targetIndex -= targets.length;
         }
