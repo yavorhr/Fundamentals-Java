@@ -1,100 +1,86 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] line = scanner.nextLine().split("\\s+");
-        List<String> shopsLists = new ArrayList<>();
-        shopsLists.addAll(Arrays.asList(line));
+        List<String> shops = Arrays
+                .stream(scanner.nextLine().split(" "))
+                .collect(Collectors.toList());
 
         int count = Integer.parseInt(scanner.nextLine());
-        for (int i = 0; i < count; i++) {
-            String[] tokens = scanner.nextLine().split("\\s+");
+
+        while (count > 0) {
+            String[] tokens = scanner.nextLine().split(" ");
             String command = tokens[0];
 
             switch (command) {
-                case "Include":
-                    String shop = tokens[1];
-                    shopsLists.add(shop);
-                    break;
-                case "Visit":
-                    String firstOrLast = tokens[1];
-                    int numberOfShops = Integer.parseInt(tokens[2]);
-                    if (firstOrLast.equals("first")) {
-                        if (shopsLists.size() - numberOfShops >= 0) {
-                            for (int j = 0; j < numberOfShops; j++) {
-                                int firstIndex = 0;
-                                shopsLists.remove(firstIndex);
-                            }
-                        }
-                        break;
-                    } else if (firstOrLast.equals("last")) {
-                        if (shopsLists.size() - numberOfShops >= 0) {
-                            for (int j = 0; j < numberOfShops; j++) {
-                                int lastIndex = shopsLists.size() - 1;
-                                shopsLists.remove(lastIndex);
-                            }
-                        }
-                    }
-                    break;
-                case "Prefer":
-                    int shopIndexOne = Integer.parseInt(tokens[1]);
-                    int shopIndexTwo = Integer.parseInt(tokens[2]);
-                    if (shopIndexOne >= 0 && shopIndexOne < shopsLists.size() && shopIndexTwo >= 0 && shopIndexTwo < shopsLists.size())
-                        if (shopsLists.contains(shopsLists.get(shopIndexOne)) && shopsLists.contains(shopsLists.get(shopIndexTwo))) {
-                            Collections.swap(shopsLists, shopIndexOne, shopIndexTwo);
-                        }
-                    break;
-                case "Place":
-                    int shopIndex = Integer.parseInt(tokens[2]);
-                    int resultIndex = shopIndex + 1;
-                    String shopToAdd = tokens[1];
-                    if (resultIndex >= 0 && resultIndex < shopsLists.size()) {
-                        shopsLists.add(resultIndex, shopToAdd);
-                    }
-                    break;
-            }
-        }
+                case "Include" -> {
+                    String newShop = tokens[1];
+                    shops.add(newShop);
+                }
+                case "Visit" -> {
+                    String direction = tokens[1];
+                    int length = Integer.parseInt(tokens[2]);
 
-        System.out.println("Shops left:");
-        System.out.println(String.join(" ", shopsLists));
+                    if (shops.size() >= length) {
+                        if (direction.equals("first")) {
+                            removeFromFirstShop(shops, length);
+                        } else if (direction.equals("last")) {
+                            removeFromLastShop(shops, length);
+                        }
+                    }
+                }
+
+                case "Prefer" -> {
+                    int firstIndex = Integer.parseInt(tokens[1]);
+                    int secondIndex = Integer.parseInt(tokens[2]);
+
+                    if (indexIsValid(firstIndex, shops) && indexIsValid(secondIndex, shops)) {
+                        swapIndexes(shops, firstIndex, secondIndex);
+                    }
+                }
+                case "Place" -> {
+                    String shop = tokens[1];
+                    int index = Integer.parseInt(tokens[2]);
+
+                    if (indexIsValid(index + 1, shops)) {
+                        shops.add(index + 1, shop);
+                    }
+                }
+            }
+            count--;
+        }
+        printResult(shops);
+    }
+
+    private static void swapIndexes(List<String> shops, int firstIndex, int secondIndex) {
+        Collections.swap(shops, firstIndex, secondIndex);
+    }
+
+    private static void removeFromLastShop(List<String> shops, int length) {
+        for (int i = 0; i < length; i++) {
+            int lastIndex = shops.size() - 1;
+            shops.remove(lastIndex);
+        }
+    }
+
+    private static void removeFromFirstShop(List<String> shops, int length) {
+        for (int i = 0; i < length; i++) {
+            int firstIndex = 0;
+            shops.remove(firstIndex);
+        }
+    }
+
+    private static boolean indexIsValid(int index, List<String> shops) {
+        return index >= 0 && index < shops.size();
+    }
+
+    private static void printResult(List<String> shops) {
+        System.out.println("Shops left: ");
+        System.out.println(String.join(" ", shops));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
