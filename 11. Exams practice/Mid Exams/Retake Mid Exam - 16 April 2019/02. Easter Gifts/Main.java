@@ -4,78 +4,45 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] gifts = scanner.nextLine().split("\\s+");
+        String[] gifts = scanner.nextLine().split(" ");
 
         String input = scanner.nextLine();
         while (!"No Money".equals(input)) {
-            String[] tokens = input.split("\\s+");
-            String command = tokens[0];
-            String gift = tokens[1];
+            String command = input.split(" ")[0];
+            String gift = input.split(" ")[1];
+            int index = getIndex(gifts, gift);
 
             switch (command) {
-                case "OutOfStock":
-                    for (int i = 0; i < gifts.length; i++) {
-                        if (gifts[i].equals(gift)) {
-                            gifts[i] = "None";
-                        }
+                case "OutOfStock" -> {
+                    while (index != -1) {
+                        gifts[index] = "None";
+                        index = getIndex(gifts, gift);
                     }
-                    break;
-                case "Required":
-                    int index = Integer.parseInt(tokens[2]);
-                    if (index >= 0 && index < gifts.length) {
+                }
+                case "Required" -> {
+                    if (index != -1) {
                         gifts[index] = gift;
                     }
-                    break;
-                case "JustInCase":
-                    gifts[gifts.length - 1] = gift;
-                    break;
+                }
+                case "JustInCase" -> gifts[gifts.length - 1] = gift;
             }
-
             input = scanner.nextLine();
         }
+        printResult(gifts);
+    }
 
-        for (int i = 0; i < gifts.length; i++) {
-            if (gifts[i] != "None") {
-                System.out.print(gifts[i] + " ");
-            }
-        }
+    private static void printResult(String[] gifts) {
+        Arrays
+                .stream(gifts)
+                .filter(g -> !g.equals("None"))
+                .forEach(g -> System.out.print(g + " "));
+    }
 
+    private static int getIndex(String[] gifts, String gift) {
+        return Arrays
+                .asList(gifts)
+                .indexOf(gift);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
