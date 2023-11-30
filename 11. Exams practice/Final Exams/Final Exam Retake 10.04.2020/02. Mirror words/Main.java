@@ -6,48 +6,47 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String text = scanner.nextLine();
-        String regex = "(@|#)(?<wordOne>[A-Za-z]{3,})\\1{2}(?<wordTwo>[A-Za-z]{3,})\\1";
-
-        //  Map<String, String> mirrorWords = new LinkedHashMap<>();
-
-        List <String> mirrorWords = new LinkedList<>();
+        String input = scanner.nextLine();
+        String regex = "([#@])(?<firstWord>[A-Za-z]{3,})\\1{2}(?<secondWord>\\w{3,})\\1";
 
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
+        Matcher matcher = pattern.matcher(input);
 
-        int count = 0;
-        int pairCount = 0;
+        List<String> mirrorWords = new ArrayList<>();
+        int pairsCount = 0;
 
         while (matcher.find()) {
-            String wordOne = matcher.group("wordOne");
-            String wordTwo = matcher.group("wordTwo");
-            pairCount++;
-            StringBuilder sb = new StringBuilder(wordTwo);
-            String reversed = sb.reverse().toString();
+            String firstWord = matcher.group("firstWord");
+            String secondWord = matcher.group("secondWord");
+            String secondWordReversed = reverseWord(secondWord);
 
-            if (wordOne.equals(reversed)) {
-                count++;
-                mirrorWords.add(wordOne + " <=> "+ wordTwo);
-                //mirrorWords.put(wordOne, wordTwo);
+            pairsCount++;
+
+            if (firstWord.equals(secondWordReversed)) {
+                mirrorWords.add(firstWord + " <=>" + secondWord);
             }
         }
+        printResult(mirrorWords, pairsCount);
+    }
 
-        if (pairCount != 0) {
-            System.out.println(String.format("%d word pairs found!", pairCount));
-        } else {
+    private static void printResult(List<String> mirrorWords, int pairsCount) {
+        if (pairsCount == 0) {
             System.out.println("No word pairs found!");
+        } else {
+            System.out.printf("%d word pairs found!\n", pairsCount);
         }
 
-        if (!mirrorWords.isEmpty()) {
-            System.out.println("The mirror words are:");
-            System.out.println(String.join(", ",mirrorWords));
-        } else {
+        if (mirrorWords.isEmpty()) {
             System.out.println("No mirror words!");
+        } else {
+            System.out.println("The mirror words are:");
+            System.out.println(String.join(", ", mirrorWords));
         }
     }
+
+    private static String reverseWord(String secondWord) {
+        return new StringBuilder(secondWord).reverse().toString();
+    }
 }
-
-
 
 
