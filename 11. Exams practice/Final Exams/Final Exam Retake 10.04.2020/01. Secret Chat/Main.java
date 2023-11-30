@@ -1,55 +1,83 @@
-
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String initialMessage = scanner.nextLine();
-        StringBuilder result = new StringBuilder(initialMessage);
+        String message = scanner.nextLine();
+        StringBuilder result = new StringBuilder(message);
 
         String input = scanner.nextLine();
         while (!"Reveal".equals(input)) {
-
             String[] tokens = input.split(":\\|:");
             String command = tokens[0];
+
             switch (command) {
-                case "InsertSpace": {
+                case "InsertSpace" -> {
                     int index = Integer.parseInt(tokens[1]);
-                    result.insert(index, " ");
-                    break;
-
+                    if (indexIsValid(index, result.length())) {
+                        result.insert(index, " ");
+                    }
+                    printCurrentResult(result);
                 }
-                case "Reverse": {
-                    String search = tokens[1];
-                    int index = result.indexOf(search);
+                case "Reverse" -> {
+                    String substring = tokens[1];
+                    if (resultContainsStr(result, substring)) {
+                        String newString = replaceOccurrences(result, substring, "");
 
-                    if (index >= 0) {
-                        result.delete(index, index + search.length());
-                        String reversed = new StringBuilder(search).reverse().toString();
-                        result.append(reversed);
+                        String reversedSubstring = reverseSubstring(substring);
+                        result = new StringBuilder(newString).append(reversedSubstring);
+
+                        printCurrentResult(result);
                     } else {
                         System.out.println("error");
-                        input = scanner.nextLine();
-                        continue;
                     }
                 }
+                case "ChangeAll" -> {
+                    String substring = tokens[1];
+                    String replacement = tokens[2];
 
-                break;
-                case "ChangeAll":
-                    String find = tokens[1];
-                    String replace = tokens[2];
+                    if (resultContainsStr(result, substring)) {
+                        String newString = replaceOccurrences(result, substring, replacement);
+                        result = new StringBuilder(newString);
+                    }
+                    printCurrentResult(result);
+                }
 
-                    String replaced = result.toString().replace(find, replace);
-                    result = new StringBuilder(replaced);
-                    break;
             }
-
-            System.out.println(result);
             input = scanner.nextLine();
         }
 
-        System.out.println(String.format("You have a new text message: %s", result));
+        printFinalResult(result);
+    }
+
+    private static void printFinalResult(StringBuilder result) {
+        System.out.printf("You have a new text message: %s", result);
+    }
+
+    private static String replaceOccurrences(StringBuilder result, String substring, String replacement) {
+        return result.toString().replace(substring, replacement);
+    }
+
+    private static boolean resultContainsStr(StringBuilder result, String substring) {
+        return result.toString().contains(substring);
+    }
+
+    private static void printCurrentResult(StringBuilder result) {
+        System.out.println(result);
+    }
+
+    private static String reverseSubstring(String substring) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = substring.length() - 1; i >= 0; i--) {
+            sb.append(substring.charAt(i));
+        }
+        return sb.toString();
+    }
+
+    private static boolean indexIsValid(int index, int length) {
+        return index >= 0 && index < length;
     }
 }
+
 
