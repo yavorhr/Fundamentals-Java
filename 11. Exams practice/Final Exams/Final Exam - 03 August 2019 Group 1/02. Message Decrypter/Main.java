@@ -6,37 +6,38 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String regex = "^([$|%])(?<tag>[A-Z][a-z]{2,})\\1:\\s\\[(?<f>\\d+)\\]\\|\\[(?<s>\\d+)\\]\\|\\[(?<t>\\d+)\\]\\|$";
+        int count = Integer.parseInt(scanner.nextLine());
+
+        String regex = "^([$|%])(?<tag>[A-Z][a-z]{2,})\\1:\\s\\[(?<first>\\d+)\\]\\|\\[(?<second>\\d+)\\]\\|\\[(?<third>\\d+)\\]\\|$";
         Pattern pattern = Pattern.compile(regex);
 
-        int count = Integer.parseInt(scanner.nextLine());
         for (int i = 0; i < count; i++) {
-            String input = scanner.nextLine();
-            Matcher matcher = pattern.matcher(input);
+            String message = scanner.nextLine();
+            Matcher matcher = pattern.matcher(message);
 
             if (matcher.find()) {
-                String tag = matcher.group("tag");
-                int f = Integer.parseInt(matcher.group("f"));
-                int s = Integer.parseInt(matcher.group("s"));
-                int t = Integer.parseInt(matcher.group("t"));
-                System.out.println(String.format("%s: %c%c%c",tag,f,s,t ));
+                String result = checkForValidMessage(matcher);
 
+                printResult(result);
             } else {
-                System.out.println("Valid message not found!");
+                printResult("Valid message not found!");
             }
 
         }
     }
+
+    private static String checkForValidMessage(Matcher matcher) {
+        String tag = matcher.group("tag");
+        int firstNumber = Integer.parseInt(matcher.group("first"));
+        int secondNumber = Integer.parseInt(matcher.group("second"));
+        int thirdNumber = Integer.parseInt(matcher.group("third"));
+
+        return String.format("%s: %c%c%c", tag, firstNumber,secondNumber,thirdNumber);
+    }
+
+    private static void printResult(String result) {
+        System.out.println(result);
+    }
 }
-
-
-
-
-
-
-
-
-
-
 
 
