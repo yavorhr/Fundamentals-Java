@@ -4,69 +4,79 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String stringManipulator = scanner.nextLine();
+        String string = scanner.nextLine();
+
         String input = scanner.nextLine();
         while (!"End".equals(input)) {
             String[] tokens = input.split(" ");
-            String command = tokens[0];
 
+            String command = tokens[0];
             switch (command) {
-                case "Translate":
-                    String findChar = tokens[1];
-                    String replace = tokens[2];
-                    if (stringManipulator.contains(findChar)) {
-                        stringManipulator = stringManipulator.replace(findChar, replace);
-                        System.out.println(stringManipulator);
+                case "Translate" -> {
+                    String character = tokens[1];
+                    String replacement = tokens[2];
+
+                    if (stringContainsSubs(string, character)) {
+                        string = string.replace(character, replacement);
                     }
-                    break;
-                case "Includes":
-                    String string = tokens[1];
-                    if (stringManipulator.contains(string)) {
-                        System.out.println("True");
+
+                    printResult(string);
+                }
+                case "Includes" -> {
+                    String substring = tokens[1];
+
+                    if (stringContainsSubs(string, substring)) {
+                        printResult("True");
                     } else {
-                        System.out.println("False");
+                        printResult("False");
                     }
-                    break;
-                case "Start":
-                    String anotherString = tokens[1];
-                    int length = anotherString.length();
-                    String substring = stringManipulator.substring(0, length);
-                    if (anotherString.equals(substring)) {
-                        System.out.println("True");
+                }
+                case "Start" -> {
+                    String substring = tokens[1];
+
+                    if (string.startsWith(substring)) {
+                        printResult("True");
                     } else {
-                        System.out.println("False");
+                        printResult("False");
                     }
-                    break;
-                case "Lowercase":
-                    stringManipulator = stringManipulator.toLowerCase();
-                    System.out.println(stringManipulator);
-                    break;
-                case "FindIndex":
-                    String toFind = tokens[1];
-                    int lastIndex = stringManipulator.lastIndexOf(toFind);
-                    System.out.println(lastIndex);
-                    break;
-                case "Remove":
-                    int startIndex = Integer.parseInt(tokens[1]);
-                    int count = Integer.parseInt(tokens[2]);
-                    substring = stringManipulator.substring(startIndex, startIndex + count);
-                    stringManipulator = stringManipulator.replace(substring, "");
-                    System.out.println(stringManipulator);
-                    break;
+                }
+                case "Lowercase" -> {
+                    string = string.toLowerCase();
+                    printResult(string);
+                }
+                case "FindIndex" -> {
+                    String character = tokens[1];
+                    int index = string.lastIndexOf(character);
+
+                    if (index != -1) {
+                        System.out.println(index);
+                    }
+                }
+                case "Remove" -> {
+                    int length = Integer.parseInt(tokens[2]);
+
+                    if (lengthIsValid(length, string.length())) {
+                        string = string.substring(length);
+                        printResult(string);
+                    }
+                }
             }
+
             input = scanner.nextLine();
         }
     }
+
+    private static boolean lengthIsValid(int length, int stringLength) {
+        return length >= 0 && length <= stringLength;
+    }
+
+    private static boolean stringContainsSubs(String string, String substring) {
+        return string.contains(substring);
+    }
+
+    private static void printResult(String string) {
+        System.out.println(string);
+    }
 }
-
-
-
-
-
-
-
-
-
-
 
 
