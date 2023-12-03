@@ -1,6 +1,9 @@
 import java.util.*;
 
 public class Main {
+    private static final int MAX_LITER_CAPACITY = 75;
+    private static final int MAX_MILEAGE_PER_YEAR = 10000;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -27,7 +30,7 @@ public class Main {
 
             switch (command) {
                 case "Drive" -> {
-                    int distance = Integer.parseInt(tokens[2]);
+                    int distanceInput = Integer.parseInt(tokens[2]);
                     int neededFuel = Integer.parseInt(tokens[3]);
 
                     int currentFuel = fuelsMap.get(currentCar);
@@ -37,11 +40,12 @@ public class Main {
                         System.out.println("Not enough fuel to make that ride");
                     } else {
                         currentFuel -= neededFuel;
-                        currentMileage += distance;
+                        currentMileage += distanceInput;
 
                         fuelsMap.put(currentCar, currentFuel);
                         mileagesMap.put(currentCar, currentMileage);
-                        System.out.printf("%s driven for %d kilometers. %d liters of fuel consumed.\n", currentCar, currentMileage, currentFuel);
+
+                        System.out.printf("%s driven for %d kilometers. %d liters of fuel consumed.\n", currentCar, distanceInput, neededFuel);
                     }
 
                     if (currentMileage >= 100000) {
@@ -55,17 +59,16 @@ public class Main {
                     int fuelInput = Integer.parseInt(tokens[2]);
                     int currentFuel = fuelsMap.get(currentCar);
 
-                    currentFuel += fuelInput;
                     int diff = fuelInput;
 
-                    if (currentFuel > 75) {
-                        diff = fuelInput - currentFuel;
-                        currentFuel = 75;
+                    if (currentFuel + fuelInput > MAX_LITER_CAPACITY) {
+                        diff = MAX_LITER_CAPACITY - currentFuel;
+                        currentFuel = MAX_LITER_CAPACITY;
                     }
 
                     fuelsMap.put(currentCar, currentFuel);
 
-                    System.out.printf("%s refueled with %d liters", currentCar, diff);
+                    System.out.printf("%s refueled with %d liters\n", currentCar, diff);
                 }
                 case "Revert" -> {
                     int kmInput = Integer.parseInt(tokens[2]);
@@ -73,17 +76,21 @@ public class Main {
 
                     currentKm -= kmInput;
 
-                    if (currentKm < 10000) {
-                        currentKm = 10000;
+                    if (currentKm < MAX_MILEAGE_PER_YEAR) {
+                        currentKm = MAX_MILEAGE_PER_YEAR;
+                    } else {
+                        System.out.printf("%s mileage decreased by %d kilometers\n", currentCar, kmInput);
                     }
-
                     mileagesMap.put(currentCar, currentKm);
-
                 }
             }
             input = scanner.nextLine();
         }
 
+        printResult(mileagesMap, fuelsMap);
+    }
+
+    private static void printResult(Map<String, Integer> mileagesMap, Map<String, Integer> fuelsMap) {
         mileagesMap
                 .entrySet()
                 .stream()
@@ -94,7 +101,12 @@ public class Main {
                         result = c1.getKey().compareTo(c2.getKey());
                     }
                     return result;
-                }).forEach(car -> System.out.printf("%s -> Mileage: %d kms, Fuel in the tank: %d lt.",car.getKey(), car.getValue(), fuelsMap.get(car.getKey())));
+                })
+                .forEach(car ->
+                        System.out.printf("%s -> Mileage: %d kms, Fuel in the tank: %d lt.\n",
+                                car.getKey(),
+                                car.getValue(),
+                                fuelsMap.get(car.getKey())));
     }
 }
 
