@@ -4,64 +4,70 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String string = scanner.nextLine();
+        String message = scanner.nextLine();
+
         String input = scanner.nextLine();
-        while (!"Done".equals(input)) {
+        while (!input.equals("Done")) {
             String[] tokens = input.split(" ");
             String command = tokens[0];
+
             switch (command) {
-                case "Change":
-                    String toFind = tokens[1];
-                    String toReplace = tokens[2];
-                    if (string.contains(toFind)) {
-                        string = string.replace(toFind, toReplace);
-                        System.out.println(string);
+                case "Change" -> {
+                    String substring = tokens[1];
+                    String replacement = tokens[2];
+                    if (doesStringExist(message, substring)) {
+                        message = message.replace(substring, replacement);
+                        System.out.println(message);
                     }
-                    break;
-                case "Includes":
-                    String ifIncludes = tokens[1];
-                    if (string.contains(ifIncludes)) {
-                        System.out.println("True");
+                }
+                case "Includes" -> {
+                    String substring = tokens[1];
+                    if (doesStringExist(message, substring)) {
+                        printCurrentString("True");
                     } else {
-                        System.out.println("False");
+                        printCurrentString("False");
                     }
-                    break;
-                case "End":
-                    String checkIfMatch = tokens[1];
-                    int length = checkIfMatch.length();
-                    String lastChars = string.substring(string.length() - length);
-
-                    if (lastChars.equals(checkIfMatch)) {
-                        System.out.println("True");
+                }
+                case "End" -> {
+                    String substring = tokens[1];
+                    if (message.endsWith(substring)) {
+                        printCurrentString("True");
                     } else {
-                        System.out.println("False");
+                        printCurrentString("False");
                     }
-                    break;
-                case "Uppercase":
-                    string = string.toUpperCase();
-                    System.out.println(string);
-                    break;
-                case "FindIndex":
-                    String findChar = tokens[1];
-                    System.out.println(string.indexOf(findChar));
-                    break;
-                case "Cut":
+                }
+                case "Uppercase" -> {
+                    message = message.toUpperCase();
+                    printCurrentString(message);
+                }
+                case "FindIndex" -> {
+                    String character = tokens[1];
+                    if (doesStringExist(message, character)) {
+                        System.out.println(message.indexOf(character));
+                    }
+                }
+                case "Cut" -> {
                     int startIndex = Integer.parseInt(tokens[1]);
-                    int legth = Integer.parseInt(tokens[2]);
-                    string = string.substring(startIndex, startIndex + legth);
-                    System.out.println(string);
-                    break;
-            }
+                    int length = Integer.parseInt(tokens[2]);
 
+                    String substring = getSubstring(message, startIndex, length);
+                    printCurrentString(substring);
+                }
+            }
             input = scanner.nextLine();
         }
     }
+
+    private static String getSubstring(String message, int startIndex, int length) {
+        return message.substring(startIndex, startIndex + length);
+    }
+
+    private static void printCurrentString(String string) {
+        System.out.println(string);
+    }
+
+    private static boolean doesStringExist(String message, String substring) {
+        return message.contains(substring);
+    }
 }
-
-
-
-
-
-
-
 
