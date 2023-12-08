@@ -6,30 +6,28 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String regex = "(@|\\*)(?<tag>[A-Z][a-z]{2,})\\1:\\s\\[(?<f>\\w)\\]\\|\\[(?<s>\\w)\\]\\|\\[(?<t>\\w)\\]\\|$";
+        String regex = "^(?<separator>[$%])(?<tag>[A-Z][a-z]{2,})\\1: \\[(?<firstGroup>\\d+)\\]\\|\\[(?<secondGroup>\\d+)\\]\\|\\[(?<thirdGroup>\\d+)\\]\\|$";
         Pattern pattern = Pattern.compile(regex);
 
         int count = Integer.parseInt(scanner.nextLine());
         for (int i = 0; i < count; i++) {
-            String input = scanner.nextLine();
-            Matcher matcher = pattern.matcher(input);
+            String message = scanner.nextLine();
 
-            if (matcher.find()) {
-                String tag = matcher.group("tag");
-                String f = matcher.group("f");
-                String s = matcher.group("s");
-                String t = matcher.group("t");
-                System.out.println(String.format("%s: %d %d %d", tag, (int) f.charAt(0), (int) s.charAt(0), (int) t.charAt(0)));
-            } else {
-                System.out.println("Valid message not found!");
-            }
+            Matcher matcher = pattern.matcher(message);
+            printIfInputMatchesRegex(matcher);
+        }
+    }
+
+    private static void printIfInputMatchesRegex(Matcher matcher) {
+        if (matcher.find()) {
+            String tag = matcher.group("tag");
+            int firstNumber = Integer.parseInt(matcher.group("firstGroup"));
+            int secondNumber = Integer.parseInt(matcher.group("secondGroup"));
+            int thirdNumber = Integer.parseInt(matcher.group("thirdGroup"));
+            System.out.printf("%s: %c%c%c%n",tag, firstNumber,secondNumber,thirdNumber);
+        } else {
+            System.out.println("Valid message not found!");
         }
     }
 }
-
-
-
-
-
-
 
