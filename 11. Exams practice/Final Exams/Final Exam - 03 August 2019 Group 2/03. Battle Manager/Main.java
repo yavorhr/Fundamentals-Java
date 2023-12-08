@@ -1,10 +1,11 @@
 import java.util.*;
 
+
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, Integer> healthmap = new HashMap<>();
+        Map<String, Integer> healthMap = new HashMap<>();
         Map<String, Integer> energyMap = new HashMap<>();
 
         String input = scanner.nextLine();
@@ -13,80 +14,81 @@ public class Main {
             String command = tokens[0];
 
             switch (command) {
-                case "Add":
+                case "Add" -> {
                     String personName = tokens[1];
-                    int healthToAdd = Integer.parseInt(tokens[2]);
-                    int energyToAdd = Integer.parseInt(tokens[3]);
+                    int healthInput = Integer.parseInt(tokens[2]);
+                    int energyInput = Integer.parseInt(tokens[3]);
 
-                    if (!healthmap.containsKey(personName)) {
-                        healthmap.put(personName, healthToAdd);
-                        energyMap.put(personName, energyToAdd);
+                    energyMap.putIfAbsent(personName, energyInput);
+
+                    if (healthMap.containsKey(personName)) {
+                        updateCurrentHealth(healthMap, personName, healthInput);
                     } else {
-                        healthmap.put(personName, healthmap.get(personName) + healthToAdd);
+                        healthMap.put(personName, healthInput);
                     }
-                    break;
-                case "Attack":
-                    String attacker = tokens[1];
-                    String defender = tokens[2];
+                }
+                case "Attack" -> {
+                    String attackerName = tokens[1];
+                    String defenderName = tokens[2];
                     int damage = Integer.parseInt(tokens[3]);
 
-                    if (healthmap.containsKey(attacker) && healthmap.containsKey(defender)) {
-                        int healthDefender = healthmap.get(defender);
-                        int energyAttacker = energyMap.get(attacker);
+                    if (energyMap.containsKey(attackerName) && healthMap.containsKey(defenderName)) {
 
-                        if (healthDefender - damage > 0) {
-                            healthmap.put(defender, healthDefender - damage);
+                        int defendersHealth = healthMap.get(defenderName);
+                        defendersHealth -= damage;
+
+                        if (defendersHealth <= 0) {
+                            disqualifyHero(healthMap, energyMap, defenderName);
+                            System.out.printf("%s was disqualified!\n", defenderName);
                         } else {
-                            healthmap.remove(defender);
-                            energyMap.remove(defender);
-                            System.out.println(String.format("%s was disqualified!", defender));
+                            healthMap.put(defenderName, defendersHealth);
                         }
 
-                        if (energyAttacker - 1 > 0) {
-                            energyMap.put(attacker, energyAttacker - 1);
+                        int attackerEnergy = energyMap.get(attackerName);
+                        attackerEnergy -= 1;
+
+                        if (attackerEnergy == 0) {
+                            disqualifyHero(healthMap, energyMap, attackerName);
+                            System.out.printf("%s was disqualified!\n", attackerName);
                         } else {
-                            healthmap.remove(attacker);
-                            energyMap.remove(attacker);
-                            System.out.println(String.format("%s was disqualified!", attacker));
+                            energyMap.put(attackerName, attackerEnergy);
                         }
                     }
-                    break;
-                case "Delete":
-                    String username = tokens[1];
-                    if (username.equals("All")) {
+                }
+                case "Delete" -> {
+                    String deleteCriteria = tokens[1];
+
+                    if (deleteCriteria.equals("All")) {
                         energyMap.clear();
-                        healthmap.clear();
-                    } else {
-                        energyMap.remove(username);
-                        healthmap.remove(username);
+                        healthMap.clear();
+                    } else if (healthMap.containsKey(deleteCriteria)) {
+                        disqualifyHero(healthMap, energyMap, deleteCriteria);
                     }
-                    break;
+                }
             }
             input = scanner.nextLine();
         }
 
-        System.out.println(String.format("People count: %d", healthmap.size()));
+        System.out.printf("People count: %d\n", healthMap.size());
 
-        healthmap
-                .entrySet()
-                .stream()
-                .sorted((p1, p2) -> {
-                    int result = p2.getValue().compareTo(p1.getValue());
-                    if (result == 0) {
-                        result = p1.getKey().compareTo(p2.getKey());
-                    }
-                    return result;
-                }).forEach(e -> System.out.println(String.format("%s - %d - %d", e.getKey(), e.getValue(), energyMap.get(e.getKey()))));
+        healthMap.entrySet().stream().sorted((h1, h2) -> {
+            int result = Integer.compare(h2.getValue(), h1.getValue());
+
+            if (result == 0) {
+                result = h1.getKey().compareTo(h2.getKey());
+            }
+            return result;
+        }).forEach(h -> System.out.printf("%s - %d - %d\n", h.getKey(), h.getValue(), energyMap.get(h.getKey())));
+    }
+
+    private static void disqualifyHero(Map<String, Integer> healthMap, Map<String, Integer> energyMap, String defenderName) {
+        energyMap.remove(defenderName);
+        healthMap.remove(defenderName);
+    }
+
+    private static void updateCurrentHealth(Map<String, Integer> personsHealth, String personName, int healthInput) {
+        int currentHealth = personsHealth.get(personName);
+        personsHealth.put(personName, currentHealth + healthInput);
     }
 }
-
-
-
-
-
-
-
-
-
-
 
