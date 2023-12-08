@@ -1,95 +1,103 @@
 import java.util.*;
 
 public class Main {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, Integer> receivedMessages = new LinkedHashMap<>();
-        Map<String, Integer> sentMessages = new LinkedHashMap<>();
+        int messagesCapacity = Integer.parseInt(scanner.nextLine());
 
-        int capacity = Integer.parseInt(scanner.nextLine());
+        Map<String, Integer> receivedMessages = new HashMap<>();
+        Map<String, Integer> sentMessages = new HashMap<>();
 
         String input = scanner.nextLine();
+
         while (!"Statistics".equals(input)) {
             String[] tokens = input.split("=");
             String command = tokens[0];
-            String user = tokens[1];
 
             switch (command) {
-                case "Add":
-                    int sent = Integer.parseInt(tokens[2]);
-                    int received = Integer.parseInt(tokens[3]);
+                case "Add" -> {
+                    String username = tokens[1];
+                    int sentCount = Integer.parseInt(tokens[2]);
+                    int receivedCount = Integer.parseInt(tokens[3]);
 
-                    if (!receivedMessages.containsKey(user)) {
-                        receivedMessages.put(user, received);
-                    }
-
-                    if ((!sentMessages.containsKey(user))) {
-                        sentMessages.put(user, sent);
-                    }
-
-                    break;
-                case "Message":
+                    sentMessages.putIfAbsent(username, sentCount);
+                    receivedMessages.putIfAbsent(username, receivedCount);
+                }
+                case "Message" -> {
                     String sender = tokens[1];
                     String receiver = tokens[2];
 
-                    if (receivedMessages.containsKey(receiver) && (sentMessages.containsKey(sender))) {
-                        sentMessages.put(sender, sentMessages.get(sender) + 1);
-                        receivedMessages.put(receiver, receivedMessages.get(receiver) + 1);
-                        if (sentMessages.get(sender) + receivedMessages.get(sender) >= capacity) {
-                            sentMessages.remove(sender);
-                            receivedMessages.remove(sender);
-                            System.out.println(String.format("%s reached the capacity!", sender));
+                    if (doesUserExist(sentMessages, sender) && doesUserExist(receivedMessages, receiver)) {
+                        int currentSentMessages = sentMessages.get(sender) + 1;
+                        int currentReceivedMessages = receivedMessages.get(receiver) + 1;
+
+                        int sentAndReceivedMessagesSender = getTotalMessages(currentSentMessages, receivedMessages, sender);
+                        int sentAndReceivedMessagesReceiver = getTotalMessages(currentReceivedMessages, sentMessages, receiver);
+
+                        if (maxCapacityReached(messagesCapacity, sentAndReceivedMessagesSender)) {
+                            removeUser(sentMessages, receivedMessages, sender);
+                            System.out.println(sender + " reached the capacity!");
+                        } else {
+                            sentMessages.put(sender, currentSentMessages);
                         }
 
-                        if (receivedMessages.get(receiver) + sentMessages.get(receiver) >= capacity) {
-                            receivedMessages.remove(receiver);
-                            sentMessages.remove(receiver);
-                            System.out.println(String.format("%s reached the capacity!", receiver));
+                        if (maxCapacityReached(messagesCapacity, sentAndReceivedMessagesReceiver)) {
+                            removeUser(receivedMessages, sentMessages, receiver);
+                            System.out.println(receiver + " reached the capacity!");
+                        } else {
+                            receivedMessages.put(receiver, currentReceivedMessages);
                         }
                     }
-                    break;
-                case "Empty":
-                    if ("All".equals(user)) {
-                        receivedMessages.clear();
+                }
+                case "Empty" -> {
+                    String deleteByCriteria = tokens[1];
+
+                    if (deleteByCriteria.equals("All")) {
                         sentMessages.clear();
+                        receivedMessages.clear();
                     } else {
-                        receivedMessages.remove(user);
-                        sentMessages.remove(user);
+                        removeUser(sentMessages, receivedMessages, deleteByCriteria);
                     }
-                    break;
+                }
             }
 
             input = scanner.nextLine();
         }
 
-        System.out.println(String.format("Users count: %d", receivedMessages.size()));
-        receivedMessages
-                .entrySet()
-                .stream()
-                .sorted((u1, u2) -> {
-                    int result = Integer.compare(u2.getValue(), (u1.getValue()));
-                    if (result == 0) {
-                        result = u1.getKey().compareTo(u2.getKey());
-                    }
-                    return result;
-                }).forEach(e -> {
-            int allMessages = e.getValue() + sentMessages.get(e.getKey());
-            System.out.println(String.format("%s - %d", e.getKey(), allMessages));
+        System.out.printf("Users count: %d\n", receivedMessages.size());
+
+        receivedMessages.entrySet().stream().sorted((u1, u2) -> {
+            int result = Integer.compare(u2.getValue(), u1.getValue());
+
+            if (result == 0) {
+                result = u1.getKey().compareTo(u2.getKey());
+            }
+            return result;
+        }).forEach(u -> {
+            int totalMessages = u.getValue() + sentMessages.get(u.getKey());
+            System.out.printf("%s - %d\n", u.getKey(), totalMessages);
         });
+
+    }
+
+    private static void removeUser(Map<String, Integer> sentMessages, Map<String, Integer> receivedMessages, String sender) {
+        sentMessages.remove(sender);
+        receivedMessages.remove(sender);
+    }
+
+    private static boolean maxCapacityReached(int messagesCapacity, int totalMessagesSender) {
+        return totalMessagesSender == messagesCapacity;
+    }
+
+    private static boolean doesUserExist(Map<String, Integer> sentMessages, String sender) {
+        return sentMessages.containsKey(sender);
+    }
+
+    private static int getTotalMessages(int currentMessages, Map<String, Integer> getRestMessages, String user) {
+        int otherMessages = getRestMessages.get(user);
+        return currentMessages + otherMessages;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
