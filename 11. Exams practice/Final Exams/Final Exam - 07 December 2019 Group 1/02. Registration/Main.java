@@ -5,31 +5,46 @@ import java.util.regex.Pattern;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String regex = "U\\$(?<username>[A-Z][a-z]{2,})U\\$P@\\$(?<password>[A-Za-z]{5,}\\d+)P@\\$";
+
+        int n = scanner.nextInt();
+        scanner.nextLine();
+        int successfulLogins = 0;
+
+        String regex = "(?<usernameSurrounding>U\\$)(?<username>[A-Z][a-z]{2,})\\1(?<passwordSurrounding>P@\\$)(?<password>[A-z]{5,})\\d+\\3";
         Pattern pattern = Pattern.compile(regex);
 
-        int n = Integer.parseInt(scanner.nextLine());
-        int count = 0;
-        for (int i = 0; i < n; i++) {
-            String input = scanner.nextLine();
-            Matcher matcher = pattern.matcher(input);
+        while (n > 0) {
+            String email = scanner.nextLine();
+            Matcher matcher = pattern.matcher(email);
 
             if (matcher.find()) {
-                count++;
                 String username = matcher.group("username");
                 String password = matcher.group("password");
-                System.out.println("Registration was successful");
-                System.out.println(String.format("Username: %s, Password: %s",username,password));
+
+                successfulLogins++;
+
+                printLoginCridentials(username, password);
             } else {
-                System.out.println("Invalid username or password");
+                printErrorMessage();
             }
+            n--;
         }
-        System.out.println(String.format("Successful registrations: %d",count));
+        printLoginsCount(successfulLogins);
+    }
+
+    private static void printLoginsCount(int successfulLogins) {
+        System.out.printf("Successful registrations: %d\n", successfulLogins);
+    }
+
+    private static void printErrorMessage() {
+        System.out.println("Invalid username or password");
+    }
+
+    private static void printLoginCridentials(String username, String password) {
+        System.out.printf(
+                "Registration was successful\n" +
+                        "Username: %s, Password: %s\n", username, password);
     }
 }
-
-
-
-
 
 
