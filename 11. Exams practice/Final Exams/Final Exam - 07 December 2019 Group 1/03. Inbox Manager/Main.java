@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, List<String>> inboxManager = new LinkedHashMap<>();
+        Map<String, List<String>> users = new HashMap<>();
 
         String input = scanner.nextLine();
         while (!"Statistics".equals(input)) {
@@ -12,57 +12,73 @@ public class Main {
             String command = tokens[0];
             String username = tokens[1];
 
-            List<String> emails = inboxManager.get(username);
-
             switch (command) {
-                case "Add":
-                    if (!inboxManager.containsKey(username)) {
-                        inboxManager.put(username, new ArrayList<>());
+                case "Add" -> {
+                    if (doesUserExist(users, username)) {
+                        printErrorMessage(username, " is already registered\n");
                     } else {
-                        System.out.println(String.format("%s is already registered", username));
+                        users.put(username, new ArrayList<>());
                     }
-                    break;
-                case "Send":
-                    String currentEmail = tokens[2];
-                    emails.add(currentEmail);
-                    inboxManager.put(username, emails);
-                    break;
-                case "Delete":
-                    if (inboxManager.containsKey(username)) {
-                        inboxManager.remove(username);
-                    } else {
-                        System.out.println(String.format("%s not found!", username));
-                    }
-                    break;
-            }
+                }
+                case "Send" -> {
+                    String email = tokens[2];
 
+                    if (doesUserExist(users, username)) {
+                        addEmail(users, username, email);
+                    }
+                }
+                case "Delete" -> {
+                    if (doesUserExist(users, username)) {
+                        users.remove(username);
+                    } else {
+                        printErrorMessage(username, " not found!\n");
+                    }
+                }
+            }
             input = scanner.nextLine();
         }
 
-        System.out.println(String.format("Users count: %d", inboxManager.size()));
-        inboxManager
+        printUsersMap(users);
+    }
+
+    private static void addEmail(Map<String, List<String>> users, String username, String email) {
+        List<String> currentEmails = users.get(username);
+        currentEmails.add(email);
+        users.put(username, currentEmails);
+    }
+
+    private static void printUsersMap(Map<String, List<String>> users) {
+        StringBuilder sb = new StringBuilder(String.format("Users count: %d\n", users.size()));
+
+        users
                 .entrySet()
                 .stream()
                 .sorted((u1, u2) -> {
-                    int result = Integer.compare(u2.getValue().size(), u1.getValue().size());
+                    int result = u2.getValue().size() - u1.getValue().size();
                     if (result == 0) {
                         result = u1.getKey().compareTo(u2.getKey());
                     }
                     return result;
-                })
-                .forEach(u -> {
-                    System.out.printf("%s%n", u.getKey());
-                    u
-                            .getValue()
-                            .forEach(e -> System.out.println(String.format(" - %s", e)));
-                });
+                }).forEach(user -> {
+            sb
+                    .append(user.getKey())
+                    .append(System.lineSeparator());
+            user
+                    .getValue()
+                    .forEach(email ->
+                            sb.append(String.format(" - %s\n", email)));
+        });
+
+        System.out.println(sb);
+    }
+
+    private static void printErrorMessage(String username, String message) {
+        System.out.printf("%s " + "%s", username, message);
+    }
+
+    private static boolean doesUserExist(Map<String, List<String>> users, String username) {
+        return users.containsKey(username);
     }
 }
-
-
-
-
-
-
 
 
