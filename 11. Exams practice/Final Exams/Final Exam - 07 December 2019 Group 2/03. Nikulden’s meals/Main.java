@@ -4,76 +4,75 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, List<String>> nikulden = new LinkedHashMap<>();
-
-        List<String> unlikedMeals = new ArrayList<>();
-
+        Map<String, List<String>> guests = new HashMap<>();
 
         String input = scanner.nextLine();
+        int unlikesCount = 0;
+
         while (!"Stop".equals(input)) {
             String[] tokens = input.split("-");
             String command = tokens[0];
-            String guest = tokens[1];
+            String name = tokens[1];
             String currentMeal = tokens[2];
 
-            switch (command) {
-                case "Like":
-                    if (!nikulden.containsKey(guest)) {
-                        nikulden.put(guest, new ArrayList<>());
-                        List<String> guestMeals = nikulden.get(guest);
-                        guestMeals.add(currentMeal);
-                        nikulden.put(guest, guestMeals);
-                    } else {
-                        List<String> guestMeals = nikulden.get(guest);
-                        if (!guestMeals.contains(currentMeal)) {
-                            guestMeals.add(currentMeal);
-                            nikulden.put(guest, guestMeals);
-                        } else {
-                            break;
-                        }
-                    }
-                    break;
-                case "Unlike":
-                    if (!nikulden.containsKey(guest)) {
-                        System.out.println(String.format("%s is not at the party.", guest));
-                        break;
-                    } else {
-                        List<String> guestMeals = nikulden.get(guest);
-                        if (!guestMeals.contains(currentMeal)) {
-                            System.out.println(String.format("%s doesn't have the %s in his/her collection.", guest, currentMeal));
-                        } else {
-                            guestMeals.remove(currentMeal);
-                            nikulden.put(guest, guestMeals);
+            if (command.equals("Like")) {
+                guests.putIfAbsent(name, new ArrayList<>());
 
-                            if (!unlikedMeals.contains(guest)) {
-                                unlikedMeals.add(guest);
-                            }
-                            System.out.println(String.format("%s doesn't like the %s.", guest, currentMeal));
-                        }
+                List<String> meals = guests.get(name);
+
+                if (!mealExists(currentMeal, meals)) {
+                    addMeal(guests, name, currentMeal, meals);
+                }
+
+            } else if (command.equals("Unlike")) {
+                if (!guests.containsKey(name)) {
+                    printMessage(name, " is not at the party.");
+                } else {
+                    List<String> meals = guests.get(name);
+
+                    if (mealExists(currentMeal, meals)) {
+                        meals.removeIf(m -> m.equals(currentMeal));
+                        printMessage(name, " doesn't like the shrimps.");
+                        unlikesCount++;
+
+                        guests.put(name, meals);
+                    } else {
+                        printMessage(name, " doesn't have the salad in his/her collection.");
                     }
-                    break;
+                }
             }
             input = scanner.nextLine();
         }
+        printResult(guests, unlikesCount);
+    }
 
+    private static void addMeal(Map<String, List<String>> guests, String name, String currentMeal, List<String> meals) {
+        meals.add(currentMeal);
+        guests.put(name, meals);
+    }
 
-        nikulden
-                .entrySet()
-                .stream()
-                .sorted((m1, m2) -> {
-                    int result = Integer.compare(m2.getValue().size(), m1.getValue().size());
-                    if (result == 0) {
-                        result = m1.getKey().compareTo(m2.getKey());
-                    }
-                    return result;
-                }).forEach(entry -> System.out.println(String.format("%s: %s", entry.getKey(),
-                String.join(", ", entry.getValue()))));
+    private static boolean mealExists(String currentMeal, List<String> meals) {
+        return meals.contains(currentMeal);
+    }
 
+    private static void printResult(Map<String, List<String>> guests, int unlikesCount) {
+        guests.entrySet().stream().sorted((g1, g2) -> {
+            int result = g2.getValue().size() - g1.getValue().size();
+            if (result == 0) {
+                result = g1.getKey().compareTo(g2.getKey());
+            }
+            return result;
+        }).forEach(g -> System.out.printf("%s: %s\n", g.getKey(), getMeals(g.getValue())));
 
-        System.out.printf("Unliked meals: %d", unlikedMeals.size());
+        System.out.printf("Unliked meals: %d", unlikesCount);
+    }
+
+    private static String getMeals(List<String> list) {
+        return String.join(", ", list);
+    }
+
+    private static void printMessage(String name, String message) {
+        System.out.println(name + message);
     }
 }
-
-
-
 
