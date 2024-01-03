@@ -6,35 +6,38 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String regex = "!(?<command>[A-Z][a-z]{2,})!:\\[(?<message>[A-Za-z]{8,})\\]";
-        Pattern pattern = Pattern.compile(regex);
-        int n = Integer.parseInt(scanner.nextLine());
+        int n = scanner.nextInt();
+        scanner.nextLine();
 
-        for (int i = 0; i < n; i++) {
+        String regex = "(!)(?<command>[A-z][a-z]+)\\1:\\[(?<message>\\w{8,})\\]";
+        Pattern pattern = Pattern.compile(regex);
+
+        while (n > 0) {
             String input = scanner.nextLine();
             Matcher matcher = pattern.matcher(input);
 
             if (matcher.find()) {
-                String command = matcher.group("command");
-                String message = matcher.group("message");
-                System.out.printf("%s: ",command);
-
-                for (int j = 0; j < message.length(); j++) {
-                    char currentChar = message.charAt(j);
-                    if (Character.isLetter(currentChar)){
-                        System.out.print((int) currentChar + " ");
-                    }
-                }
-                System.out.println();
+                printMessage(matcher);
             } else {
-                System.out.println("The message is invalid");
+                printErrorMessage();
             }
+            n--;
         }
+    }
 
+    private static void printErrorMessage() {
+        System.out.println("The message is invalid");
+    }
+
+    private static void printMessage(Matcher matcher) {
+        String command = matcher.group("command");
+        String message = matcher.group("message");
+
+        StringBuilder stringBuilder = new StringBuilder(String.format("%s: ", command));
+        for (char character : message.toCharArray()) {
+            stringBuilder.append(String.format("%d ", +character));
+        }
+        System.out.println(stringBuilder);
     }
 }
-
-
-
-
 
