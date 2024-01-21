@@ -1,71 +1,81 @@
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, List<String>> practiceMap = new LinkedHashMap<>();
+        Map<String, List<String>> dataRoutes = new HashMap<>();
 
         String input = scanner.nextLine();
         while (!"END".equals(input)) {
             String[] tokens = input.split("->");
             String command = tokens[0];
+            String currentRoad = tokens[1];
+
             switch (command) {
-                case "Add":
-                    String road = tokens[1];
+                case "Add" -> {
                     String racer = tokens[2];
-
-                    practiceMap.putIfAbsent(road, new ArrayList<>());
-                    List<String> racers = practiceMap.get(road);
-                    racers.add(racer);
-                    practiceMap.put(road, racers);
-                    break;
-                case "Move":
-                    String currentRoad = tokens[1];
-                    String currentRacer = tokens[2];
+                    dataRoutes.putIfAbsent(currentRoad, new ArrayList<>());
+                    addRacerToRoute(dataRoutes, currentRoad, racer);
+                }
+                case "Move" -> {
+                    String racer = tokens[2];
                     String nextRoad = tokens[3];
-                    if (practiceMap.get(currentRoad).contains(currentRacer)) {
-                        List<String> racersCurrentRoad = practiceMap.get(currentRoad);
-                        racersCurrentRoad.remove(currentRacer);
-                        practiceMap.put(currentRoad, racersCurrentRoad);
-
-                        List<String> racersNextRoad = practiceMap.get(nextRoad);
-                        if (!racersNextRoad.contains(currentRacer)) {
-                            racersNextRoad.add(currentRacer);
-                            practiceMap.put(nextRoad, racersNextRoad);
-                        }
+                    if (doesRacerExistInCurrentRoad(dataRoutes, currentRoad, racer)) {
+                        moveRacerToTheNextRoad(dataRoutes, currentRoad, nextRoad, racer);
                     }
-                    break;
-                case "Close":
-                    String roadToRemove = tokens[1];
-                    if (practiceMap.containsKey(roadToRemove)) {
-                        practiceMap.remove(roadToRemove);
-                    }
-                    break;
+                }
+                case "Close" -> dataRoutes.remove(currentRoad);
             }
             input = scanner.nextLine();
         }
 
-        System.out.println("Practice sessions:");
-        practiceMap
+        printOutput(dataRoutes);
+    }
+
+    private static void printOutput(Map<String, List<String>> dataRoutes) {
+        StringBuilder sb = new StringBuilder("Practice sessions:\n");
+
+        dataRoutes
                 .entrySet()
                 .stream()
-                .sorted((r1, r2) -> {
-                    int result = Integer.compare(r2.getValue().size(), r1.getValue().size());
-                    if (result == 0) {
-                        result = r1.getKey().compareTo(r2.getKey());
-                        return result;
-                    }
-                    return result;
-                }).forEach(road -> {
-            System.out.println(String.format("%s", road.getKey()));
-            road.getValue().forEach(racer-> System.out.println(String.format("++%s",racer)));
-        });
+                .sorted(new ComparatorByRacersCount())
+                .forEach(entry -> {
+                    sb.append(entry.getKey()).append(System.lineSeparator());
+
+                    entry.getValue()
+                            .forEach(racer ->
+                                    sb.append(String.format("++%s\n", racer)));
+                });
+
+        System.out.println(sb);
+    }
+
+    private static void addRacerToRoute(Map<String, List<String>> dataRoutes, String currentRoad, String racer) {
+        List<String> currentRacers = getRacers(dataRoutes, currentRoad);
+
+        currentRacers.add(racer);
+        dataRoutes.put(currentRoad, currentRacers);
+    }
+
+    private static void moveRacerToTheNextRoad(Map<String, List<String>> dataRoutes, String currentRoad, String nextRoad, String racer) {
+        List<String> currentRacers = getRacers(dataRoutes, currentRoad);
+        currentRacers.remove(racer);
+        dataRoutes.put(currentRoad, currentRacers);
+
+        addRacerToRoute(dataRoutes, nextRoad, racer);
+    }
+
+    private static List<String> getRacers(Map<String, List<String>> dataRoutes, String currentRoad) {
+        return dataRoutes.get(currentRoad);
+    }
+
+    private static boolean doesRacerExistInCurrentRoad(Map<String, List<String>> dataRoutes, String currentRoad, String racer) {
+        List<String> racers = getRacers(dataRoutes, currentRoad);
+        return racers.contains(racer);
     }
 }
-
-
-
 
 
 
