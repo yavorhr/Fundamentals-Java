@@ -6,45 +6,50 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String text = scanner.nextLine();
+        String input = scanner.nextLine();
 
-        String digitsRegex = "\\d";
-        Pattern digitsPattern = Pattern.compile(digitsRegex);
-        Matcher digitsMatcher = digitsPattern.matcher(text);
+        String regexForEmojis = "([:]{2}|[*]{2})([A-Z][a-z]{2,})\\1";
+        String regexForDigits = "\\d";
 
-        long treshold = 1;
-        while (digitsMatcher.find()) {
-            int num = Integer.parseInt(digitsMatcher.group());
-            treshold *= num;
-        }
+        long threshold = getThreshold(regexForDigits, input);
+        List<String> emojis = getEmojis(input, regexForEmojis);
+        printResult(threshold, emojis);
 
-        String regex = "([:]{2}|[*]{2})([A-Z][a-z]{2,})\\1";
-        Pattern pattern = Pattern.compile(regex);
+    }
 
-        int countEmojis = 0;
+    private static void printResult(long threshold, List<String> emojis) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Cool threshold: %d\n", threshold));
+        sb.append(String.format("%d emojis found in the text. The cool ones are:\n", emojis.size()));
+        emojis.forEach(e -> sb.append(e).append("\n"));
+
+        System.out.println(sb);
+
+    }
+
+    private static List<String> getEmojis(String input, String regexForEmojis) {
+        Pattern pattern = Pattern.compile(regexForEmojis);
+        Matcher matcher = pattern.matcher(input);
+
         List<String> emojis = new ArrayList<>();
 
-        Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
-            String emoji = matcher.group();
-            countEmojis++;
-
-            int emojiSum = 0;
-            for (int i = 0; i < emoji.length(); i++) {
-                char currentChar = emoji.charAt(i);
-                emojiSum += (int) currentChar;
-            }
-
-            if (emojiSum > treshold) {
-                emojis.add(emoji);
-            }
+            emojis.add(matcher.group());
         }
 
-        System.out.println(String.format("Cool threshold: %d", treshold));
-        System.out.println(String.format("%d emojis found in the text. The cool ones are:", countEmojis));
-        for (String emoji : emojis) {
-            System.out.println(emoji);
+        return emojis;
+    }
+
+    private static long getThreshold(String regexForDigits, String input) {
+        Pattern pattern = Pattern.compile(regexForDigits);
+        Matcher matcher = pattern.matcher(input);
+
+        long threshold = 1;
+        while (matcher.find()) {
+            int num = Integer.parseInt(matcher.group());
+            threshold *= num;
         }
+        return threshold;
     }
 }
 
