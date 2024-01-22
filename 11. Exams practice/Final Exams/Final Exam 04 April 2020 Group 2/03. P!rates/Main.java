@@ -4,92 +4,119 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, Integer> mapPopulation = new LinkedHashMap<>();
-        Map<String, Integer> mapGold = new LinkedHashMap<>();
+        Map<String, Integer> populationsMap = new HashMap<>();
+        Map<String, Integer> goldMap = new HashMap<>();
 
         String input = scanner.nextLine();
         while (!"Sail".equals(input)) {
             String[] tokens = input.split("\\|\\|");
-            String keyCity = tokens[0];
+            String town = tokens[0];
+
             int population = Integer.parseInt(tokens[1]);
             int gold = Integer.parseInt(tokens[2]);
 
-            mapPopulation.putIfAbsent(keyCity, 0);
-            int currentPopulation = mapPopulation.get(keyCity);
-            mapPopulation.put(keyCity, currentPopulation + population);
-
-            mapGold.putIfAbsent(keyCity, 0);
-            int currentGold = mapGold.get(keyCity);
-            mapGold.put(keyCity, currentGold + gold);
+            addToMap(populationsMap, town, population);
+            addToMap(goldMap, town, gold);
 
             input = scanner.nextLine();
         }
 
-        String line = scanner.nextLine();
-        while (!"End".equals(line)) {
-            String[] tokens = line.split("=>");
+        input = scanner.nextLine();
+        while (!"End".equals(input)) {
+            String[] tokens = input.split("=>");
             String command = tokens[0];
             String town = tokens[1];
 
             switch (command) {
-                case "Plunder":
-                    int killedPeople = Integer.parseInt(tokens[2]);
-                    int stolenGold = Integer.parseInt(tokens[3]);
+                case "Plunder" -> {
+                    int people = Integer.parseInt(tokens[2]);
+                    int gold = Integer.parseInt(tokens[3]);
 
-                    if (mapPopulation.get(town) - killedPeople > 0 && mapGold.get(town) - stolenGold > 0) {
-                        int newPopulation = mapPopulation.get(town) - killedPeople;
-                        mapPopulation.put(town, newPopulation);
+                    boolean peopleAlive = plunderTown(populationsMap, town, people);
+                    boolean moreGoldLeft = plunderTown(goldMap, town, gold);
+                    deleteMapIfOtherIsDeleted(town, moreGoldLeft, peopleAlive, populationsMap, goldMap);
 
-                        int newGold = mapGold.get(town) - stolenGold;
-                        mapGold.put(town, newGold);
+                    System.out.printf("%s plundered! %d gold stolen, %d citizens killed.\n", town, gold, people);
 
-                        System.out.println(String.format("%s plundered! %d gold stolen, %d citizens killed.", town, stolenGold, killedPeople));
-
-                    } else if (mapPopulation.get(town) - killedPeople == 0 || mapGold.get(town) - stolenGold == 0) {
-                        int newPopulation = mapPopulation.get(town) - killedPeople;
-                        mapPopulation.put(town, newPopulation);
-                        int newGold = mapGold.get(town) + stolenGold;
-                        mapGold.put(town, newGold);
-                        mapGold.remove(town);
-                        mapPopulation.remove(town);
-                        System.out.println(String.format("%s plundered! %d gold stolen, %d citizens killed.", town, stolenGold, killedPeople));
-                        System.out.println(String.format("%s has been wiped off the map!", town));
+                    if (!moreGoldLeft || !peopleAlive) {
+                        System.out.printf("%s has been wiped off the map!\n", town);
                     }
+                }
+                case "Prosper" -> {
+                    int gold = Integer.parseInt(tokens[2]);
 
-                    break;
-                case "Prosper":
-                    int moreGold = Integer.parseInt(tokens[2]);
-                    if (moreGold > 0) {
-                        int newGold = mapGold.get(town) + moreGold;
-                        mapGold.put(town, newGold);
-                        System.out.println(String.format("%d gold added to the city treasury. %s now has %s gold.", moreGold, town, mapGold.get(town)));
-                    } else if (moreGold < 0) {
+                    if (invalidGoldInput(gold)) {
                         System.out.println("Gold added cannot be a negative number!");
-                    }
-                    break;
+                    } else {
+                        int currentGold = goldMap.get(town);
+                        int totalGold = currentGold + gold;
 
+                        goldMap.put(town, totalGold);
+
+                        System.out.printf("%d gold added to the city treasury. %s now has %d gold.\n", gold, town, totalGold);
+                    }
+                }
             }
 
-            line = scanner.nextLine();
+            input = scanner.nextLine();
+        }
+        printResult(goldMap, populationsMap);
+    }
+
+    private static void deleteMapIfOtherIsDeleted(String town, boolean moreGoldInTownLeft, boolean morePeopleInTownLeft, Map<String, Integer> populationsMap, Map<String, Integer> goldMap) {
+        if (!moreGoldInTownLeft) {
+            populationsMap.remove(town);
         }
 
-        int remainingTowns = mapGold.size();
+        if (!morePeopleInTownLeft){
+            goldMap.remove(town);
+        }
+    }
 
-        System.out.println(String.format("Ahoy, Captain! There are %d wealthy settlements to go to:", remainingTowns));
+    private static void printResult(Map<String, Integer> goldMap, Map<String, Integer> populationsMap) {
+        StringBuilder sb = new StringBuilder(String.format("Ahoy, Captain! There are %d wealthy settlements to go to:\n", goldMap.size()));
 
-        mapGold
-                .entrySet()
+        goldMap.
+                entrySet()
                 .stream()
-                .sorted((t1, t2) -> {
-                    int result = Integer.compare(t2.getValue(), t1.getValue());
-                    if (result == 0) {
-                        result = t1.getKey().compareTo(t2.getKey());
-                    }
-                    return result;
-                }).forEach(t ->
-                System.out.println(String.format("%s -> Population: %d citizens, Gold: %d kg", t.getKey(), mapPopulation.get(t.getKey()), t.getValue())));
+                .sorted(new ComparatorByGoldAndName())
+                .forEach(entry -> {
+                    sb.append(String.format("%s -> Population: %d citizens, Gold: %d kg\n",
+                            entry.getKey(),
+                            populationsMap.get(entry.getKey()),
+                            entry.getValue()));
+                });
 
+        System.out.print(sb);
+    }
+
+    private static boolean invalidGoldInput(int gold) {
+        return gold <= 0;
+    }
+
+    private static boolean plunderTown(Map<String, Integer> map, String town, int value) {
+        int current = map.get(town);
+        int updatedValue = current - value;
+
+        if (updatedValue > 0) {
+            map.put(town, updatedValue);
+            return true;
+        } else {
+            map.remove(town);
+            return false;
+        }
+    }
+
+    private static void addToMap(Map<String, Integer> map, String city, int population) {
+        map.putIfAbsent(city, 0);
+
+        int current = map.get(city);
+        int updated = current + population;
+
+        map.put(city, updated);
     }
 }
+
+
 
 
