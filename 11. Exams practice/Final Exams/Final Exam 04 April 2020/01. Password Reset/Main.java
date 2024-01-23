@@ -8,43 +8,62 @@ public class Main {
 
         String input = scanner.nextLine();
         while (!"Done".equals(input)) {
-            String[] parts = input.split(" ");
-            String command = parts[0];
-            StringBuilder sb = new StringBuilder();
+            String[] tokens = input.split(" ");
+            String command = tokens[0];
 
             switch (command) {
-                case "TakeOdd":
-                    for (int i = 0; i < password.length(); i++) {
-                        if (i % 2 != 0) {
-                            sb.append(password.charAt(i));
-                        }
-                    }
-                    password = String.valueOf(sb);
-                    System.out.println(password);
-                    break;
-                case "Cut":
-                    int index = Integer.parseInt(parts[1]);
-                    int еndIndex = Integer.parseInt(parts[2]) + index;
+                case "TakeOdd" -> {
+                    password = getCharsAtOddIndexes(password);
+                    printMessage(password);
+                }
+                case "Cut" -> {
+                    int startIndex = Integer.parseInt(tokens[1]);
+                    int length = Integer.parseInt(tokens[2]);
+                    int endIndex = startIndex + length;
 
-                    sb.append(password).delete(index, еndIndex);
-                    password = String.valueOf(sb);
-                    System.out.println(password);
+                    String substring = password.substring(startIndex, endIndex);
+                    password = password.replace(substring, "");
 
-                    break;
-                case "Substitute":
-                    String toFind = parts[1];
-                    String toReplace = parts[2];
+                    printMessage(password);
+                }
+                case "Substitute" -> {
+                    String substring = tokens[1];
+                    String substitute = tokens[2];
 
-                    if (password.contains(toFind)) {
-                        password = password.replace(toFind, toReplace);
-                        System.out.println(password);
+                    if (!password.contains(substring)) {
+                        printMessage("Nothing to replace!");
                     } else {
-                        System.out.println("Nothing to replace!");
+                        password = password.replace(substring, substitute);
+
+                        printMessage(password);
                     }
-                    break;
+                }
             }
             input = scanner.nextLine();
         }
-        System.out.println(String.format("Your password is: %s", password));
+        printMessage("Your password is:", password);
+    }
+
+    private static void printMessage(String... values) {
+        if (values.length == 1) {
+            System.out.println(values[0]);
+        } else {
+            System.out.printf("%s %s", values[0], values[1]);
+        }
+    }
+
+    private static String getCharsAtOddIndexes(String password) {
+        StringBuilder newPassword = new StringBuilder();
+
+        for (int i = 0; i < password.length(); i++) {
+            if (i % 2 != 0) {
+                newPassword.append(password.charAt(i));
+            }
+        }
+        return newPassword.toString();
     }
 }
+
+
+
+
