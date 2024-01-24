@@ -6,45 +6,49 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String regex = "([#$%*&])(?<name>[A-Z][A-Za-z]+)\\1=(?<length>\\d*)!!(?<code>.+)$";
+        boolean isFound = false;
+
+        String regex = "(?<symbol>[#$%*$])(?<name>[A-za-z]+)\\1=(?<length>\\d+)!!(?<geohashcode>.+)$";
         Pattern pattern = Pattern.compile(regex);
 
-        boolean found = false;
-
-        while (!found) {
+        while (!isFound) {
             String input = scanner.nextLine();
 
             Matcher matcher = pattern.matcher(input);
 
-            if (matcher.find() && Integer.parseInt(matcher.group("length")) == matcher.group("code").length()) {
+            if (matcher.find()) {
                 String name = matcher.group("name");
                 int length = Integer.parseInt(matcher.group("length"));
-                String code = matcher.group("code");
+                String coordinates = matcher.group("geohashcode");
 
-                StringBuilder sb = new StringBuilder();
-
-                for (int i = 0; i < code.length(); i++) {
-                    char currChar = code.charAt(i);
-                    sb.append((char) (currChar + length));
+                if (length != coordinates.length()) {
+                    printNothingFound();
+                } else {
+                    System.out.printf("Coordinates found! %s -> %s", name, getCoordinates(coordinates, length));
+                    isFound = true;
                 }
-
-                System.out.println(String.format("Coordinates found! %s -> %s", name, sb.toString()));
-                found = true;
-
             } else {
-                System.out.println("Nothing found!");
+                printNothingFound();
             }
-
         }
     }
+
+    private static void printNothingFound() {
+        System.out.println("Nothing found!");
+    }
+
+    private static String getCoordinates(String code, int length) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < code.length(); i++) {
+            char currentChar = code.charAt(i);
+            int modifiedChar = currentChar + length;
+
+            sb.append(String.format("%c",modifiedChar));
+        }
+        return sb.toString();
+    }
 }
-
-
-
-
-
-
-
 
 
 
