@@ -4,66 +4,63 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Map<String, Integer> followers = new LinkedHashMap<>();
+        Map<String, Integer> followers = new HashMap<>();
 
         String input = scanner.nextLine();
         while (!"Log out".equals(input)) {
-
             String[] tokens = input.split(": ");
             String command = tokens[0];
             String username = tokens[1];
 
             switch (command) {
-                case "New follower":
-                    followers.putIfAbsent(username, 0);
-                    break;
-                case "Like":
+                case "New follower" -> followers.putIfAbsent(username, 0);
+                case "Like" -> {
                     int count = Integer.parseInt(tokens[2]);
 
-                    if (followers.containsKey(username)) {
-                        int currentCount = followers.get(username);
-                        followers.put(username, currentCount + count);
+                    if (doesFollowerExist(followers, username)) {
+                        int commentsAndLikes = followers.get(username);
+                        followers.put(username, commentsAndLikes + count);
                     } else {
-                        followers.putIfAbsent(username, count);
+                        followers.put(username, count);
                     }
-                    break;
-                case "Comment":
-                    if (followers.containsKey(username)) {
-                        int currentCount = followers.get(username);
-                        followers.put(username, currentCount + 1);
+                }
+                case "Comment" -> {
+                    if (doesFollowerExist(followers, username)) {
+                        followers.put(username, followers.get(username) + 1);
                     } else {
-                        followers.putIfAbsent(username, 1);
+                        followers.put(username, 1);
                     }
-                    break;
-                case "Blocked":
-                    if (followers.containsKey(username)){
+                }
+                case "Blocked" -> {
+                    if (!doesFollowerExist(followers, username)) {
+                        System.out.printf("%s doesn't exist.\n", username);
+                    } else {
                         followers.remove(username);
-                    } else {
-                        System.out.println(String.format("%s doesn't exist.",username));
                     }
-
-                    break;
+                }
             }
-
             input = scanner.nextLine();
         }
-        System.out.println(String.format("%d followers", followers.size()));
+
+        printResult(followers);
+    }
+
+    private static boolean doesFollowerExist(Map<String, Integer> followers, String username) {
+        return followers.containsKey(username);
+    }
+
+    private static void printResult(Map<String, Integer> followers) {
+        StringBuilder sb = new StringBuilder(String.format("%d followers\n", followers.size()));
+
         followers
                 .entrySet()
                 .stream()
-                .sorted((f1, f2) -> {
-                    int result = f2.getValue().compareTo(f1.getValue());
-                    if (result == 0) {
-                        result = f1.getKey().compareTo(f2.getKey());
-                    }
-                    return result;
-                })
-                .forEach(e -> System.out.println(String.format("%s: %d", e.getKey(), e.getValue())));
+                .sorted(new ComparatorByLikesCommDescAndByUsername())
+                .forEach(e -> sb.append(String.format("%s: %d\n", e.getKey(), e.getValue())));
+
+        System.out.println(sb);
     }
 }
-
-
-
 
 
 
