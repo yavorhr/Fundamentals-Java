@@ -6,28 +6,32 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String text = scanner.nextLine();
-
         String regex = "(=|\\/)(?<place>[A-Z][A-Za-z]{2,})\\1";
         Pattern pattern = Pattern.compile(regex);
+        String input = scanner.nextLine();
+        Matcher matcher = pattern.matcher(input);
 
         List<String> destinations = new ArrayList<>();
 
-        Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             String place = matcher.group("place");
             destinations.add(place);
         }
 
-        int travelPoints = 0;
-        for (String place : destinations) {
-            travelPoints += place.length();
-        }
+        printOutput(destinations);
+    }
 
-        System.out.println(String.format("Destinations: %s", String.join(", ", destinations)));
-        System.out.println(String.format("Travel Points: %d", travelPoints));
+    private static void printOutput(List<String> destinations) {
+        int travelPoints = destinations.stream()
+                .map(String::length)
+                .mapToInt(Integer::valueOf)
+                .sum();
 
+        System.out.printf("Destinations: %s\n" +
+                "Travel Points: %d\n", getDestinations(destinations), travelPoints);
+    }
+
+    private static String getDestinations(List<String> destinations) {
+        return String.join(", ", destinations);
     }
 }
-
-
