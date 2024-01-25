@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String userName = scanner.nextLine();
+        String username = scanner.nextLine();
 
         String input = scanner.nextLine();
         while (!"Sign up".equals(input)) {
@@ -12,56 +12,81 @@ public class Main {
             String command = tokens[0];
 
             switch (command) {
-                case "Case":
-                    String lowerOrUpper = tokens[1];
-                    if (lowerOrUpper.equals("lower")) {
-                        userName = userName.toLowerCase();
-                        System.out.println(userName);
-                    } else {
-                        userName = userName.toUpperCase();
-                        System.out.println(userName);
-                    }
-                    break;
-                case "Reverse":
+                case "Case" -> {
+                    String condition = tokens[1];
+                    username = convertInput(condition, username);
+                    printOutput(username);
+                }
+                case "Reverse" -> {
                     int startIndex = Integer.parseInt(tokens[1]);
                     int endIndex = Integer.parseInt(tokens[2]);
-                    if (startIndex >= 0 && endIndex < userName.length()) {
-                        String reversed = userName.substring(startIndex, endIndex + 1);
-                        StringBuilder sb = new StringBuilder(reversed).reverse();
-                        System.out.println(sb.toString());
+
+                    if (indexIsValid(startIndex, username) && indexIsValid(endIndex, username)) {
+                        String reversed = getReversed(username, startIndex, endIndex);
+                        printOutput(reversed);
                     }
-                    break;
-                case "Cut":
+                }
+                case "Cut" -> {
                     String substring = tokens[1];
-                    if (userName.contains(substring)) {
-                        userName = userName.replace(substring, "");
-                        System.out.println(userName);
+                    if (username.contains(substring)) {
+                        username = username.replace(substring, "");
+                        printOutput(username);
                     } else {
-                        System.out.println(String.format("The word %s doesn't contain %s.", userName, substring));
+                        printOutput(String.format("The word %s doesn't contain %s.", username, substring));
                     }
-                    break;
-                case "Replace":
-                    String currChar = tokens[1];
-                    if (userName.contains(currChar)) {
-                        userName = userName.replace(currChar, "*");
-                        System.out.println(userName);
-                    }
-                    break;
-                case "Check":
-                    String keyChar = tokens[1];
-                    if (userName.contains(keyChar)) {
-                        System.out.println("Valid");
+                }
+                case "Replace" -> {
+                    String charToReplace = tokens[1];
+                    username = replaceChars(charToReplace, username);
+                    printOutput(username);
+                }
+                case "Check" -> {
+                    String currentChar = tokens[1];
+                    if (username.contains(currentChar)) {
+                        printOutput("Valid");
                     } else {
-                        System.out.println(String.format("Your username must contain %s.", keyChar));
+                        printOutput(String.format("Your username must contain %s.", currentChar));
                     }
-                    break;
+                }
             }
             input = scanner.nextLine();
         }
     }
+
+    private static String getReversed(String username, int startIndex, int endIndex) {
+        return new StringBuilder(username.substring(startIndex, endIndex + 1))
+                .reverse()
+                .toString();
+    }
+
+    private static void printOutput(String string) {
+        System.out.println(string);
+    }
+
+    private static String replaceChars(String charToReplace, String input) {
+        int charIndex = input.indexOf(charToReplace);
+
+        while (charIndex != -1) {
+            input = input.replace(charToReplace, "*");
+
+            charIndex = input.indexOf(charToReplace);
+        }
+        return input;
+    }
+
+    private static boolean indexIsValid(int index, String input) {
+        return index >= 0 && index < input.length();
+    }
+
+    private static String convertInput(String condition, String input) {
+        if (condition.equals("lower")) {
+            input = input.toLowerCase();
+        } else if (condition.equals("upper")) {
+            input = input.toUpperCase();
+        }
+        return input;
+    }
 }
-
-
 
 
 
