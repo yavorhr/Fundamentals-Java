@@ -1,47 +1,55 @@
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
+    private static int EMPLOYEES_COUNT = 3;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] numbersAsText = scanner.nextLine().split(" ");
-        int[] numbers = new int[numbersAsText.length];
-        for (int i = 0; i < numbersAsText.length; i++) {
-            numbers[i] = Integer.parseInt(numbersAsText[i]);
-        }
+        int[] numbers = Arrays.stream(scanner.nextLine()
+                .split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
 
         String input = scanner.nextLine();
         while (!"end".equals(input)) {
             String[] tokens = input.split(" ");
             String command = tokens[0];
+
             switch (command) {
-                case "swap":
-                    int indexOne = Integer.parseInt(tokens[1]);
-                    int indexTwo = Integer.parseInt(tokens[2]);
-                    int temp = numbers[indexTwo];
-                    numbers[indexTwo] = numbers[indexOne];
-                    numbers[indexOne] = temp;
-                    break;
-                case "multiply":
-                    int multiplyOne = Integer.parseInt(tokens[1]);
-                    int multiplyTwo = Integer.parseInt(tokens[2]);
-                    int product = numbers[multiplyOne] * numbers[multiplyTwo];
-                    numbers[multiplyOne] = product;
-                    break;
-                case "decrease":
-                    for (int i = 0; i < numbers.length; i++) {
-                        numbers[i] -= 1;
-                    }
-                    break;
+                case "swap" -> {
+                    int index1 = Integer.parseInt(tokens[1]);
+                    int index2 = Integer.parseInt(tokens[2]);
+
+                    swapIndexes(numbers, index1, index2);
+                }
+                case "multiply" -> {
+                    int index1 = Integer.parseInt(tokens[1]);
+                    int index2 = Integer.parseInt(tokens[2]);
+
+                    numbers[index1] = numbers[index1] * numbers[index2];
+                }
+                case "decrease" -> numbers = Arrays.stream(numbers).map(e -> e -= 1).toArray();
             }
+
             input = scanner.nextLine();
         }
+        printOutput(numbers);
+    }
 
-        for (int i = 0; i < numbers.length-1; i++) {
-            System.out.print (numbers[i] + ", ");
-        }
+    private static void printOutput(int[] numbers) {
+        String result = Arrays.stream(numbers).mapToObj(String::valueOf).collect(Collectors.joining(", "));
+        System.out.println(result);
+    }
 
-        System.out.print(numbers[numbers.length-1]);
+    private static void swapIndexes(int[] numbers, int index1, int index2) {
+        int temp = numbers[index1];
+        numbers[index1] = numbers[index2];
+        numbers[index2] = temp;
     }
 }
+
+
+
 
