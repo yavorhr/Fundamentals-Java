@@ -3,81 +3,69 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        Map<String, Plant> plants = new HashMap<>();
+
         int n = Integer.parseInt(scanner.nextLine());
-
-        Map<String, Integer> plantRarities = new LinkedHashMap<>();
-        Map<String, List<Double>> plantsRatings = new LinkedHashMap<>();
-
-        for (int i = 0; i < n; i++) {
-            String input = scanner.nextLine();
-            String[] tokens = input.split("<->");
-            String plantName = tokens[0];
-            int rarity = Integer.parseInt(tokens[1]);
-
-            plantRarities.put(plantName, rarity);
-            plantsRatings.put(plantName, new ArrayList<>());
+        while (n-- > 0) {
+            String[] tokens = splitInput(scanner.nextLine(), "<->");
+            addPlantToMap(plants, tokens);
         }
+
         String input = scanner.nextLine();
-        while (!input.equals("Exhibition")) {
-            input = input.replaceAll("-", "");
-            String[] tokens = input.split("\\s+");
+        while (!"Exhibition".equals(input)) {
+            String[] tokens = splitInput(input, ": ");
             String command = tokens[0];
+            String[] innerTokens = splitInput(tokens[1], " - ");
+            String name = innerTokens[0];
+
+            Plant plant = plants.get(name);
 
             switch (command) {
-                case "Rate:": {
-                    String plantName = tokens[1];
-                    double rating = Double.parseDouble(tokens[2]);
-                    if (plantsRatings.containsKey(plantName)) {
-                        plantsRatings.get(plantName).add(rating);
-                    }
-
+                case "Rate" -> {
+                    int rating = Integer.parseInt(innerTokens[1]);
+                    plant.rate(rating);
                 }
-                break;
-                case "Update:": {
-                    String plantName = tokens[1];
-                    int newRarity = Integer.parseInt(tokens[2]);
-                    if (plantRarities.containsKey(plantName)) {
-                        plantRarities.put(plantName, newRarity);
-                    }
+                case "Update" -> {
+                    int rarity = Integer.parseInt(innerTokens[1]);
+                    plant.updateRarity(rarity);
                 }
-                break;
-                case "Reset:": {
-                    String plantName = tokens[1];
-                    plantsRatings.get(plantName).clear();
-                }
-                break;
-                default:
-                    System.out.println("error");
+                case "Reset" -> plant.resetRating();
+                default -> System.out.println("error");
             }
+
+            plants.put(name, plant);
             input = scanner.nextLine();
         }
-        System.out.println("Plants for the exhibition:");
 
+        printOutput(plants);
+    }
 
-        plantRarities
-                .entrySet()
+    private static void printOutput(Map<String, Plant> plants) {
+        StringBuilder sb = new StringBuilder("Plants for the exhibition:\n");
+
+        plants.values()
                 .stream()
-                .sorted((a, b) -> {
-                    int result = b.getValue() - a.getValue();
-                    if (result == 0) {
-                        if (plantsRatings.get(b.getKey()).isEmpty() || plantsRatings.get(a.getKey()).isEmpty()){
-                            return result;
-                        }else{
-                            double res = plantsRatings.get(b.getKey()).stream().mapToDouble(i -> i).average().orElse(0.0)
-                                    - plantsRatings.get(a.getKey()).stream().mapToDouble(i -> i).average().orElse(0.0);
-                            return (int) res;
-                        }
-                    }else{
-                        return result;
-                    }
+                .sorted()
+                .forEach(p ->
+                        sb.append(p).append(System.lineSeparator()));
 
-                })
-                .forEach(e -> {
+        System.out.println(sb);
+    }
 
-                    System.out.println(String.format("- %s; Rarity: %d; Rating: %.2f", e.getKey(),
-                            e.getValue(),plantsRatings.get(e.getKey()).stream().mapToDouble(i -> i).average().orElse(0.00)));
-                });
+    private static String[] splitInput(String input, String s) {
+        return input.split(s);
+    }
 
+    private static void addPlantToMap(Map<String, Plant> plants, String[] tokens) {
+        String name = tokens[0];
+        int rarity = Integer.parseInt(tokens[1]);
+
+        Plant plant = new Plant(name, rarity);
+        plants.put(name, plant);
     }
 }
+
+
+
 
