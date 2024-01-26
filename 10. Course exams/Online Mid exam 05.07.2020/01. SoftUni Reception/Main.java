@@ -1,28 +1,33 @@
-
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
+    private static int EMPLOYEES_COUNT = 3;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int employeeOne = Integer.parseInt(scanner.nextLine());
-        int employeeTwo = Integer.parseInt(scanner.nextLine());
-        int employeeThree = Integer.parseInt(scanner.nextLine());
-
-        int studentsCount = Integer.parseInt(scanner.nextLine());
-        int employeeTogether = employeeOne + employeeTwo + employeeThree;
-
-        int hour = studentsCount / employeeTogether;
-        if (studentsCount % employeeTogether > 0) {
-            hour++;
+        int employeeTogetherPerHour = 0;
+        while (EMPLOYEES_COUNT-- > 0) {
+            int studentsPerHour = Integer.parseInt(scanner.nextLine());
+            employeeTogetherPerHour += studentsPerHour;
         }
 
-        for (int i = 1; i <= hour; i++) {
-            if (i % 4 == 0) {
-                hour++;
-            }
+        int totalStudentsForTheDay = Integer.parseInt(scanner.nextLine());
+
+        int hours = totalStudentsForTheDay / employeeTogetherPerHour;
+        int remainder = totalStudentsForTheDay % employeeTogetherPerHour;
+
+        if (remainder > 0) {
+            hours += 1;
         }
-        System.out.printf("Time needed: %dh.",hour);
+
+        int breaks = hours / 4;
+        int totalTime = breaks + hours;
+
+        System.out.printf("Time needed: %d.", totalTime);
     }
 }
+
+
+
 
