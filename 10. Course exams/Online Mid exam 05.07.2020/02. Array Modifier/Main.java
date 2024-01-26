@@ -2,8 +2,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
-    private static int EMPLOYEES_COUNT = 3;
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
